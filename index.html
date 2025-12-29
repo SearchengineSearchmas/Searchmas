@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Searchmas Split</title>
+  <title>Searchmas Engine</title>
   <style>
     body {
       margin: 0;
       height: 100vh;
       display: flex;
-      font-family: Arial, sans-serif;
     }
     .half {
       width: 50%;
@@ -19,13 +18,36 @@
     }
     .content {
       position: absolute;
-      top: 20px;
+      top: 20%;
       left: 50%;
       transform: translateX(-50%);
       text-align: center;
+      font-family: Arial, sans-serif;
+      color: white;
+    }
+    h1 {
+      font-size: 3em;
+      margin-bottom: 30px;
+    }
+    input[type="text"] {
+      width: 400px;   /* standard width */
+      padding: 12px;  /* bigger padding */
+      font-size: 1.2em;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      padding: 12px 25px;
+      font-size: 1.2em;
+      margin-left: 10px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      background-color: crimson;
+      color: white;
     }
     nav {
-      margin-top: 20px;
+      margin-top: 30px;
     }
     nav a {
       padding: 10px 20px;
@@ -52,8 +74,11 @@
   <!-- Right Santa -->
   <div class="half"></div>
 
-  <!-- Tabs overlay -->
+  <!-- Title + Search box + Tabs -->
   <div class="content">
+    <h1>🌲Searchmas 🎅</h1>
+    <input id="query" type="text" placeholder="Search here...">
+    <button onclick="setActive(document.querySelector('nav a'))">Search</button>
     <nav>
       <a href="#" class="active" onclick="setActive(this)">Web</a>
       <a href="#" onclick="setActive(this)">Images</a>
