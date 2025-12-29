@@ -133,3 +133,13 @@
       if(!query) return;
       setActive('tabVideos');
       content.innerHTML=
+        item('YouTube: '+query,'https://www.youtube.com/results?search_query='+encodeURIComponent(query))+
+        item('Bing Videos: '+query,'https://www.bing.com/videos/search?q='+encodeURIComponent(query));
+    }
+
+    function showNews(){
+      const query=getQuery();
+      if(!query) return;
+      setActive('tabNews');
+      content.innerHTML=
+        item('Google News:
