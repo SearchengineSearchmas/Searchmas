@@ -8,11 +8,10 @@
     body { margin:0; font-family:sans-serif; color:#fff; }
     .split { display:flex; min-height:100vh; }
     .half { flex:1; background:url('https://cdn.fcglcdn.com/brainbees/images/products/583x720/19208325a.webp') center/cover no-repeat; }
-    .card { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:min(980px,92vw); padding:20px; background:rgba(0,0,0,0.65); border-radius:16px; }
+    .card { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:min(900px,92vw); padding:20px; background:rgba(0,0,0,0.65); border-radius:16px; }
     h1 { margin:0 0 12px; text-align:center; font-size:2em; }
-    .bar { display:flex; gap:10px; margin-bottom:12px; align-items:center; }
-    .bar input { padding:12px; border-radius:8px; border:1px solid #444; background:#1b1b1b; color:#fff; }
-    .bar .grow { flex:1; }
+    .bar { display:flex; gap:10px; margin-bottom:12px; }
+    .bar input { flex:1; padding:12px; border-radius:8px; border:1px solid #444; background:#1b1b1b; color:#fff; }
     .bar button { padding:12px; border-radius:8px; border:none; background:#ff5ca8; color:#fff; cursor:pointer; }
     .tabs { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
     .tabs button { padding:8px 12px; border-radius:6px; background:#333; color:#fff; border:none; cursor:pointer; }
@@ -24,7 +23,6 @@
     .item a:hover { text-decoration:underline; }
     .row { display:flex; gap:8px; flex-wrap:wrap; }
     .row .pill { background:#222; padding:8px 12px; border-radius:999px; }
-    .muted { font-size:0.9em; color:#ccc; }
   </style>
 </head>
 <body>
@@ -32,144 +30,72 @@
     <div class="half"></div>
     <div class="half"></div>
     <div class="card">
-      <h1>Searchmas 🎅🎄</h1>
-
-      <div class="bar">
-        <input id="username" type="text" placeholder="Username (optional)">
-        <span class="muted" id="hello"></span>
+      <!-- Homepage -->
+      <div id="home">
+        <h1>Searchmas 🎅🎄</h1>
+        <div class="bar">
+          <input id="username" type="text" placeholder="Username (optional)">
+        </div>
+        <div class="bar">
+          <input id="q" type="text" placeholder="Search…">
+          <button id="go">Search</button>
+        </div>
       </div>
 
-      <div class="bar">
-        <input id="q" class="grow" type="text" placeholder="Search…">
-        <button id="go">Search</button>
+      <!-- Results view -->
+      <div id="results" style="display:none;">
+        <div class="bar">
+          <input id="qTop" type="text">
+          <button id="goTop">Go</button>
+          <button id="back">Back</button>
+        </div>
+        <div class="tabs">
+          <button id="tabWeb" class="active">Web</button>
+          <button id="tabImages">Images</button>
+          <button id="tabVideos">Videos</button>
+          <button id="tabNews">News</button>
+          <button id="tabDiscuss">Discuss</button>
+          <button id="tabHistory">History</button>
+        </div>
+        <div id="content"></div>
       </div>
-
-      <div class="tabs">
-        <button id="tabWeb" class="active">Web</button>
-        <button id="tabImages">Images</button>
-        <button id="tabVideos">Videos</button>
-        <button id="tabNews">News</button>
-        <button id="tabDiscuss">Discuss</button>
-        <button id="tabHistory">History</button>
-      </div>
-
-      <div id="content"></div>
     </div>
   </div>
 
   <script>
-    const usernameEl = document.getElementById('username');
-    const helloEl = document.getElementById('hello');
-    const qEl = document.getElementById('q');
-    const goBtn = document.getElementById('go');
-    const content = document.getElementById('content');
-    const tabs = ['tabWeb','tabImages','tabVideos','tabNews','tabDiscuss','tabHistory'];
-    let currentUser = localStorage.getItem('searchmasUsername') || '';
+    const home=document.getElementById('home');
+    const results=document.getElementById('results');
+    const q=document.getElementById('q');
+    const qTop=document.getElementById('qTop');
+    const content=document.getElementById('content');
+    let currentUser=localStorage.getItem('searchmasUsername')||'';
 
-    function setHello(){
-      helloEl.textContent = currentUser ? `Hi, ${currentUser}` : '';
-    }
-    if (currentUser) { usernameEl.value = currentUser; setHello(); }
-
-    usernameEl.addEventListener('change', () => {
-      const name = (usernameEl.value || '').trim();
-      currentUser = name;
-      localStorage.setItem('searchmasUsername', name);
-      setHello();
+    document.getElementById('username').addEventListener('change',e=>{
+      currentUser=e.target.value.trim();
+      localStorage.setItem('searchmasUsername',currentUser);
     });
 
-    function setActive(id){
-      tabs.forEach(t => document.getElementById(t).classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-    }
+    document.getElementById('go').onclick=()=>enterResults();
+    document.getElementById('goTop').onclick=()=>refreshActive();
+    document.getElementById('back').onclick=()=>{results.style.display='none';home.style.display='block';};
 
-    function getQuery(){ return (qEl.value || '').trim(); }
+    q.addEventListener('keydown',e=>{if(e.key==='Enter'){enterResults();}});
+    qTop.addEventListener('keydown',e=>{if(e.key==='Enter'){refreshActive();}});
 
-    function saveSearch(q){
-      if(!currentUser) return;
-      const key = currentUser + '_history';
-      const hist = JSON.parse(localStorage.getItem(key) || '[]');
-      hist.unshift({ q, ts: new Date().toISOString() });
-      localStorage.setItem(key, JSON.stringify(hist.slice(0,200)));
-    }
+    function getQuery(){return (qTop.value.trim()||q.value.trim());}
+    function setActive(id){['tabWeb','tabImages','tabVideos','tabNews','tabDiscuss','tabHistory'].forEach(t=>document.getElementById(t).classList.remove('active'));document.getElementById(id).classList.add('active');}
+    function activeTab(){return ['tabWeb','tabImages','tabVideos','tabNews','tabDiscuss','tabHistory'].find(t=>document.getElementById(t).classList.contains('active'))||'tabWeb';}
+    function saveSearch(q){if(!currentUser)return;const key=currentUser+'_history';const hist=JSON.parse(localStorage.getItem(key)||'[]');hist.unshift(q);localStorage.setItem(key,JSON.stringify(hist.slice(0,200)));}
 
-    function getHistory(){
-      if(!currentUser) return [];
-      const key = currentUser + '_history';
-      return JSON.parse(localStorage.getItem(key) || '[]');
-    }
+    function enterResults(){const query=getQuery();if(!query)return;saveSearch(query);home.style.display='none';results.style.display='block';qTop.value=query;showWeb();}
+    function refreshActive(){const id=activeTab();if(id==='tabWeb')showWeb();else if(id==='tabImages')showImages();else if(id==='tabVideos')showVideos();else if(id==='tabNews')showNews();else if(id==='tabDiscuss')showDiscuss();else showHistory();}
 
-    function faviconFor(url){
-      try { return 'https://www.google.com/s2/favicons?domain=' + encodeURIComponent(new URL(url).hostname); }
-      catch { return 'https://www.google.com/favicon.ico'; }
-    }
+    function favicon(url){try{return 'https://www.google.com/s2/favicons?domain='+new URL(url).hostname;}catch{return 'https://www.google.com/favicon.ico';}}
+    function item(label,url){return `<div class="item"><img src="${favicon(url)}"><a href="${url}" target="_blank">${label}</a></div>`;}
 
-    function item(label,url){
-      return `<div class="item"><img src="${faviconFor(url)}" alt=""><a href="${url}" target="_blank">${label}</a></div>`;
-    }
-
-    function showWeb(){
-      const q = getQuery(); if(!q){ content.innerHTML = 'Type a query.'; return; }
-      setActive('tabWeb'); saveSearch(q);
-      content.innerHTML =
-        item('Google: '+q, 'https://www.google.com/search?q='+encodeURIComponent(q)) +
-        item('Bing: '+q, 'https://www.bing.com/search?q='+encodeURIComponent(q)) +
-        item('DuckDuckGo: '+q, 'https://duckduckgo.com/?q='+encodeURIComponent(q)) +
-        item('Wikipedia: '+q, 'https://en.wikipedia.org/wiki/Special:Search?search='+encodeURIComponent(q));
-    }
-
-    function showImages(){
-      const q = getQuery(); if(!q){ content.innerHTML = 'Type a query.'; return; }
-      setActive('tabImages'); saveSearch(q);
-      content.innerHTML =
-        item('Google Images: '+q, 'https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q)) +
-        item('Bing Images: '+q, 'https://www.bing.com/images/search?q='+encodeURIComponent(q)) +
-        item('Yandex Images: '+q, 'https://yandex.com/images/search?text='+encodeURIComponent(q));
-    }
-
-    function showVideos(){
-      const q = getQuery(); if(!q){ content.innerHTML = 'Type a query.'; return; }
-      setActive('tabVideos'); saveSearch(q);
-      content.innerHTML =
-        item('YouTube: '+q, 'https://www.youtube.com/results?search_query='+encodeURIComponent(q)) +
-        item('Bing Videos: '+q, 'https://www.bing.com/videos/search?q='+encodeURIComponent(q)) +
-        item('Vimeo: '+q, 'https://vimeo.com/search?q='+encodeURIComponent(q));
-    }
-
-    function showNews(){
-      const q = getQuery(); if(!q){ content.innerHTML = 'Type a query.'; return; }
-      setActive('tabNews'); saveSearch(q);
-      content.innerHTML =
-        `<div class="item"><img src="https://www.gstatic.com/images/branding/product/2x/news_96dp.png" alt=""><a href="https://news.google.com/search?q=${encodeURIComponent(q)}" target="_blank">Google News: ${q}</a></div>` +
-        item('Bing News: '+q, 'https://www.bing.com/news/search?q='+encodeURIComponent(q)) +
-        item('Reuters: '+q, 'https://www.reuters.com/search/news?blob='+encodeURIComponent(q));
-    }
-
-    function showDiscuss(){
-      const q = getQuery(); if(!q){ content.innerHTML = 'Type a query.'; return; }
-      setActive('tabDiscuss'); saveSearch(q);
-      content.innerHTML =
-        item('Reddit: '+q, 'https://www.reddit.com/search/?q='+encodeURIComponent(q)) +
-        item('Quora: '+q, 'https://www.quora.com/search?q='+encodeURIComponent(q)) +
-        item('Stack Overflow: '+q, 'https://stackoverflow.com/search?q='+encodeURIComponent(q));
-    }
-
-    function showHistory(){
-      setActive('tabHistory');
-      const hist = getHistory();
-      if(!currentUser){ content.innerHTML = 'Set a username to save history.'; return; }
-      if(hist.length===0){ content.innerHTML = 'No history yet.'; return; }
-      content.innerHTML = '<div class="row">' + hist.slice(0,50).map(h => `<span class="pill">${h.q}</span>`).join('') + '</div>';
-    }
-
-    goBtn.onclick = showWeb;
-    qEl.addEventListener('keydown', e => { if(e.key==='Enter') showWeb(); });
-    document.getElementById('tabWeb').onclick = showWeb;
-    document.getElementById('tabImages').onclick = showImages;
-    document.getElementById('tabVideos').onclick = showVideos;
-    document.getElementById('tabNews').onclick = showNews;
-    document.getElementById('tabDiscuss').onclick = showDiscuss;
-    document.getElementById('tabHistory').onclick = showHistory;
-  </script>
-</body>
-</html>
+    function showWeb(){const q=getQuery();if(!q)return;setActive('tabWeb');content.innerHTML=item('Google: '+q,'https://www.google.com/search?q='+encodeURIComponent(q))+item('Bing: '+q,'https://www.bing.com/search?q='+encodeURIComponent(q))+item('DuckDuckGo: '+q,'https://duckduckgo.com/?q='+encodeURIComponent(q))+item('Wikipedia: '+q,'https://en.wikipedia.org/wiki/Special:Search?search='+encodeURIComponent(q));}
+    function showImages(){const q=getQuery();if(!q)return;setActive('tabImages');content.innerHTML=item('Google Images: '+q,'https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q))+item('Bing Images: '+q,'https://www.bing.com/images/search?q='+encodeURIComponent(q))+item('Yandex Images: '+q,'https://yandex.com/images/search?text='+encodeURIComponent(q));}
+    function showVideos(){const q=getQuery();if(!q)return;setActive('tabVideos');content.innerHTML=item('YouTube: '+q,'https://www.youtube.com/results?search_query='+encodeURIComponent(q))+item('Bing Videos: '+q,'https://www.bing.com/videos/search?q='+encodeURIComponent(q))+item('Vimeo: '+q,'https://vimeo.com/search?q='+encodeURIComponent(q));}
+    function showNews(){const q=getQuery();if(!q)return;setActive('tabNews');content.innerHTML=`<div class="item"><img src="https://www.gstatic.com/images/branding/product/2x/news_96dp.png"><a href="https://news.google.com/search?q=${encodeURIComponent(q)}" target="_blank">Google News: ${q}</a></div>`+item('Bing News: '+q,'https://www.bing.com/news/search?q='+encodeURIComponent(q))+item('Reuters: '+q,'https://www.reuters.com/search/news?blob='+encodeURIComponent(q));}
+    function showDiscuss(){const q=getQuery();if(!q)return;setActive('tabDiscuss');content.innerHTML=item('Reddit: '+q,'https://www.reddit.com/search/?q='+encodeURIComponent(q))+item('Quora: '+q,'https://www.quora.com/search?q='+encodeURIComponent(q))+item('Stack Overflow: '+q,'https://stackoverflow.com/search?q='+encodeURIComponent(q));}
+    function showHistory(){setActive('tabHistory');if(!currentUser){content.innerHTML='Set a username to save history.';return;}const key=currentUser+'_history';const hist=JSON.parse(localStorage.getItem(key)||'[]');if(hist.length===0){
