@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Childmas Search Engine</title>
+  <title>Searchmas 🎅🎄</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    body { margin:0; font-family:sans-serif; background:#111; color:#eee; }
+    body { margin:0; font-family:sans-serif; color:#eee; }
     .split { display:flex; height:100vh; }
     .half { flex:1; background:url('https://raw.githubusercontent.com/username/repo/branch/Santa.png') center/cover no-repeat; }
     .card { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:min(900px,92vw); padding:20px; background:rgba(0,0,0,0.65); border-radius:16px; }
-    h1 { margin:0 0 12px; text-align:center; }
+    h1 { margin:0 0 12px; text-align:center; font-size:2em; }
     .searchbar { display:flex; gap:10px; margin-bottom:20px; }
     .searchbar input { flex:1; padding:12px; border-radius:8px; border:1px solid #444; background:#1b1b1b; color:#fff; }
     .searchbar button { padding:12px; border-radius:8px; border:none; background:#ff5ca8; color:#fff; cursor:pointer; }
@@ -32,13 +32,13 @@
     <div class="half"></div>
     <div class="card">
       <div id="signin">
-        <h2>Sign In</h2>
+        <h2>Sign In 🎅🎄</h2>
         <input id="username" type="text" placeholder="Username">
         <input id="password" type="password" placeholder="Password">
         <button id="loginBtn">Login</button>
       </div>
       <div id="home" style="display:none;">
-        <h1>Childmas</h1>
+        <h1>Searchmas 🎅🎄</h1>
         <div class="searchbar">
           <input id="query" type="text" placeholder="Search…" />
           <button id="searchBtn">Search</button>
@@ -70,7 +70,7 @@
     const qInput=document.getElementById('query');
     const qTop=document.getElementById('queryTop');
     const content=document.getElementById('resultsContent');
-    document.getElementById('loginBtn').onclick=()=>{const user=document.getElementById('username').value.trim();const pass=document.getElementById('password').value.trim();if(user&&pass){currentUser=user;localStorage.setItem('childmasUser',user);signin.style.display='none';home.style.display='block';}};
+    document.getElementById('loginBtn').onclick=()=>{const user=document.getElementById('username').value.trim();const pass=document.getElementById('password').value.trim();if(user&&pass){currentUser=user;localStorage.setItem('searchmasUser',user);signin.style.display='none';home.style.display='block';}};
     document.getElementById('searchBtn').onclick=()=>enterResults();
     document.getElementById('goBtn').onclick=()=>refreshActive();
     document.getElementById('backBtn').onclick=()=>{results.style.display='none';home.style.display='block';};
@@ -87,4 +87,4 @@
     async function showImages(){ const q=getQuery(); if(!q)return; setActive('tabImages'); try { const res = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(q)}&per_page=12&client_id=b6Om1yQejxS88kA2na-UYEct9zypZTOmAYlzJMbeEe0`); const data = await res.json(); let grid='<div class="photo-grid">'; data.results.forEach(img=>{ grid += `<img src="${img.urls.small}" alt="${q}">`; }); grid+='</div>'; content.innerHTML=grid; } catch(err){ content.innerHTML='<p>Could not load images.</p>'; } }
     function showVideos(){ const q=getQuery(); if(!q)return; setActive('tabVideos'); content.innerHTML= item('YouTube: '+q,'https://www.youtube.com/results?search_query='+encodeURIComponent(q),'https://www.youtube.com/favicon.ico','Videos on YouTube')+ item('Bing Videos: '+q,'https://www.bing.com/videos/search?q='+encodeURIComponent(q),'https://www.bing.com/favicon.ico','Videos on Bing'); }
     function showNews(){ const q=getQuery(); if(!q)return; setActive('tabNews'); content.innerHTML= item('Google News: '+q,'https://news.google.com/search?q='+encodeURIComponent(q),'https://www.gstatic.com/images/branding/product/2x/news_96dp.png','News from Google')+ item('Bing News: '+q,'https://www.bing.com/news/search?q='+encodeURIComponent(q),'https://www.bing.com/favicon.ico','News from Bing'); }
-    function showDiscuss(){ const q=getQuery(); if(!q)return; setActive('tabDiscuss'); content.innerHTML= item('Reddit: '+q,'https://www.reddit.com/search
+    function showDiscuss(){ const q=getQuery(); if(!q)return; setActive('tabDiscuss'); content.innerHTML= item('Red
