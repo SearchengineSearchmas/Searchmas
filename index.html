@@ -58,7 +58,7 @@
   <script>
     const bingIcon='https://companieslogo.com/img/orig/bing-09dcb19f.png?t=1700061799&download=true';
     const geminiIcon='https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/google-gemini-icon.png';
-    const unsplashKey='YOUR_UNSPLASH_ACCESS_KEY'; // replace with your key
+    const unsplashKey='YOUR_UNSPLASH_ACCESS_KEY'; // replace with your Unsplash key
 
     function getQuery(){return (document.getElementById('qTop').value.trim()||document.getElementById('q').value.trim());}
     function setActive(id){['tabWeb','tabImages','tabVideos','tabNews','tabDiscuss'].forEach(t=>document.getElementById(t).classList.remove('active'));document.getElementById(id).classList.add('active');}
@@ -139,4 +139,6 @@
 
     // Attach listeners after DOM is loaded
     document.getElementById('go').addEventListener('click', enterResults);
-    document.getElementById('q').addEventListener('keydown
+    document.getElementById('q').addEventListener('keydown', e=>{if(e.key==='Enter') enterResults();});
+    document.getElementById('goTop').addEventListener('click', refreshActive);
+    document.getElementById('qTop').addEventListener('keydown
