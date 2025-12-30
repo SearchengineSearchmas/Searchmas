@@ -74,18 +74,19 @@
     const q=document.getElementById('q');
     const qTop=document.getElementById('qTop');
     const content=document.getElementById('content');
-
-    const tabs=['tabWeb','tabImages','tabVideos','tabNews','tabDiscuss'];
     const bingIcon='https://www.bing.com/sa/simg/favicon-trans-bg-blue-mg.ico';
 
-    document.getElementById('go').addEventListener('click', enterResults);
-    q.addEventListener('keydown', e=>{if(e.key==='Enter') enterResults();});
-    document.getElementById('goTop').addEventListener('click', refreshActive);
-    qTop.addEventListener('keydown', e=>{if(e.key==='Enter') refreshActive();});
-    document.getElementById('back').addEventListener('click', ()=>{
+    // Event bindings
+    document.getElementById('go').onclick = enterResults;
+    q.addEventListener('keydown', e => { if(e.key==='Enter') enterResults(); });
+    document.getElementById('goTop').onclick = refreshActive;
+    qTop.addEventListener('keydown', e => { if(e.key==='Enter') refreshActive(); });
+    document.getElementById('back').onclick = () => {
       results.style.display='none';home.style.display='block';qTop.value='';
-    });
+    };
 
+    // Tab switching
+    const tabs=['tabWeb','tabImages','tabVideos','tabNews','tabDiscuss'];
     tabs.forEach(id=>{
       document.getElementById(id).addEventListener('click', ()=>{setActive(id);refreshActive();});
     });
