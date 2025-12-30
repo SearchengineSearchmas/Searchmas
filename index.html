@@ -60,7 +60,7 @@
     const q=document.getElementById('q');
     const qTop=document.getElementById('qTop');
     const content=document.getElementById('content');
-    const bingIcon='https://image.pngaaa.com/505/5738505-middle.png';
+    const wikiIcon='https://en.wikipedia.org/static/favicon/wikipedia.ico';
 
     window.onload = () => {
       document.getElementById('go').addEventListener('click', enterResults);
@@ -108,8 +108,7 @@
       content.innerHTML =
         item('Google: '+query,'https://www.google.com/search?q='+encodeURIComponent(query),'https://www.google.com/favicon.ico')+
         item('ChatGPT: '+query,'https://chat.openai.com/?q='+encodeURIComponent(query),'https://chat.openai.com/favicon.ico',true)+
-        item('Gemini: '+query,'https://gemini.google.com/app/search?q='+encodeURIComponent(query),'https://gemini.google.com/favicon.ico')+
-        item('Bing: '+query,'https://www.bing.com/search?q='+encodeURIComponent(query),bingIcon);
+        item('Wikipedia: '+query,'https://en.wikipedia.org/wiki/'+encodeURIComponent(query),wikiIcon);
     }
 
     async function showImages(){
@@ -132,7 +131,7 @@
       setActive('tabVideos');
       content.innerHTML =
         item('YouTube: '+query,'https://www.youtube.com/results?search_query='+encodeURIComponent(query),'https://www.youtube.com/favicon.ico')+
-        item('Bing Videos: '+query,'https://www.bing.com/videos/search?q='+encodeURIComponent(query),bingIcon);
+        item('Netflix: '+query,'https://www.netflix.com/search?q='+encodeURIComponent(query),'https://assets.nflxext.com/us/ffe/siteui/common/icons/nficon2016.ico');
     }
 
     function showNews(){
@@ -140,7 +139,7 @@
       setActive('tabNews');
       content.innerHTML =
         item('Google News: '+query,'https://news.google.com/search?q='+encodeURIComponent(query),'https://www.gstatic.com/images/branding/product/2x/news_96dp.png')+
-        item('Bing News: '+query,'https://www.bing.com/news/search?q='+encodeURIComponent(query),bingIcon);
+        item('Wikipedia Current Events: '+query,'https://en.wikipedia.org/wiki/Portal:Current_events',wikiIcon);
     }
 
     function showDiscuss(){
@@ -148,8 +147,4 @@
       setActive('tabDiscuss');
       content.innerHTML =
         item('Reddit: '+query,'https://www.reddit.com/search/?q='+encodeURIComponent(query),'https://www.redditstatic.com/desktop2x/img/favicon/favicon-32x32.png')+
-        item('Quora: '+query,'https://www.quora.com/search?q='+encodeURIComponent(query),'https://www.quora.com/favicon.ico');
-    }
-  </script>
-</body>
-</html>
+        item('Quora: '+query,'https://www.quora.com/search?q='+encodeURIComponent
