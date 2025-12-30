@@ -8,12 +8,12 @@
     html,body {
       height:100%; margin:0; font-family:sans-serif; color:#fff;
     }
-    /* Split background into two equal halves */
+    /* Split screen into two equal halves */
     .bg-split {
       position:fixed; inset:0; display:flex;
     }
     .bg-half {
-      width:50%; height:100%;
+      flex:1; /* each half takes 50% */
       background:url('https://cdn.fcglcdn.com/brainbees/images/products/583x720/19208325a.webp') center/cover no-repeat;
     }
     .card {
