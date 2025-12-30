@@ -63,6 +63,23 @@ input {
 .hidden { display: none; }
 .app { padding: 24px; }
 
+/* Top bar */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.back {
+  font-size: 18px;
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+}
+.back:hover { background: #eee; }
+
 /* Tabs */
 .tabs {
   display: flex;
@@ -112,7 +129,7 @@ input {
   height: 48px;
 }
 
-/* Image grid */
+/* Images */
 .images {
   margin-top: 32px;
   display: grid;
@@ -139,7 +156,10 @@ input {
 
 <!-- APP -->
 <div id="app" class="app hidden">
-  <input id="topSearch" placeholder="Search">
+  <div class="topbar">
+    <button class="back" onclick="goHome()">⬅ Back</button>
+    <input id="topSearch" placeholder="Search">
+  </div>
 
   <div class="tabs">
     <button class="active" data-tab="web">Web</button>
@@ -163,6 +183,13 @@ const topSearch = document.getElementById("topSearch");
 const tabs = document.querySelectorAll(".tabs button");
 
 let query = "";
+
+function goHome() {
+  app.classList.add("hidden");
+  home.classList.remove("hidden");
+  content.innerHTML = "";
+  homeSearch.value = "";
+}
 
 function activate(tab) {
   tabs.forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
