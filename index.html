@@ -9,7 +9,7 @@
     .bg-split {position:fixed;inset:0;display:flex;}
     .bg-half {flex:1;background:url('https://cdn.fcglcdn.com/brainbees/images/products/583x720/19208325a.webp') center/cover no-repeat;}
     .card {position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-      width:min(600px,90%);padding:20px;background:rgba(0,0,0,0.75);border-radius:16px;
+      width:min(800px,95%);padding:20px;background:rgba(0,0,0,0.75);border-radius:16px;
       display:flex;flex-direction:column;align-items:center;justify-content:center;}
     h1 {margin:0 0 16px;text-align:center;font-size:2em;}
     .bar {display:flex;gap:10px;margin-bottom:12px;width:100%;justify-content:center;}
@@ -111,16 +111,20 @@
         item('Gemini: '+query,'https://gemini.google.com/app/search?q='+encodeURIComponent(query),'https://www.google.com/s2/favicons?domain=gemini.google.com');
     }
 
-    function showImages(){
+    async function showImages(){
       const query=getQuery();
       if(!query) return;
       setActive('tabImages');
-      let html='<div class="photo-grid">';
-      for(let i=0;i<12;i++){
-        html+=`<img src="https://source.unsplash.com/300x300/?${encodeURIComponent(query)}&sig=${i}" alt="${query}">`;
-      }
-      html+='</div>';
-      content.innerHTML=html;
+      try{
+        const res=await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=12&client_id=YOUR_UNSPLASH_KEY`);
+        const data=await res.json();
+        let html='<div class="photo-grid">';
+        (data.results||[]).forEach(img=>{
+          html+=`<a href="${img.links.html}" target="_blank"><img src="${img.urls.small}" alt="${query}"></a>`;
+        });
+        html+='</div>';
+        content.innerHTML=html||'<p>No images found.</p>';
+      }catch{content.innerHTML='<p>Could not load images.</p>';}
     }
 
     function showVideos(){
