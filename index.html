@@ -1,34 +1,140 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Minimal Search Test</title>
+  <meta charset="utf-8" />
+  <title>Searchmas 🎅🎄</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    body { font-family:sans-serif; background:#222; color:#fff; }
-    .bar { display:flex; gap:10px; margin:20px; }
-    input { flex:1; padding:8px; }
-    button { padding:8px 12px; background:#ff5ca8; border:none; color:#fff; cursor:pointer; }
-    #results { margin:20px; }
+    html,body {height:100%;margin:0;font-family:sans-serif;color:#fff;}
+    .bg-split {position:fixed;inset:0;display:flex;}
+    .bg-half {flex:1;background:url('https://cdn.fcglcdn.com/brainbees/images/products/583x720/19208325a.webp') center/cover no-repeat;}
+    .card {position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+      width:min(800px,95%);padding:20px;background:rgba(0,0,0,0.8);border-radius:16px;
+      display:flex;flex-direction:column;align-items:center;justify-content:flex-start;}
+    h1 {margin:0 0 16px;text-align:center;font-size:2em;}
+    .bar {display:flex;gap:10px;margin-bottom:12px;width:100%;justify-content:center;}
+    .bar input {flex:1;padding:12px;border-radius:8px;border:1px solid #444;background:#1b1b1b;color:#fff;max-width:420px;}
+    .bar button {padding:12px;border-radius:8px;border:none;background:#ff5ca8;color:#fff;cursor:pointer;}
+    .tabs {display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;justify-content:center;width:100%;}
+    .tabs button {padding:8px 12px;border-radius:6px;background:#333;color:#fff;border:none;cursor:pointer;}
+    .tabs button.active {background:#ff5ca8;}
+    #content {margin-top:8px;width:100%;max-height:420px;overflow-y:auto;}
+    .item {margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+    .item img {width:24px;height:24px;object-fit:contain;}
+    .chatgpt-icon {background:#fff;border-radius:50%;padding:4px;}
+    .item a {color:#fff;text-decoration:none;font-weight:bold;}
+    .item a:hover {text-decoration:underline;}
+    .photo-grid {display:grid;grid-template-columns:repeat(4,1fr);gap:10px;justify-items:center;}
+    .photo-grid img {width:120px;height:120px;object-fit:cover;border-radius:8px;background:#222;}
   </style>
 </head>
 <body>
-  <div class="bar">
-    <input id="q" type="text" placeholder="Search…">
-    <button id="go">Search</button>
+  <div class="bg-split"><div class="bg-half"></div><div class="bg-half"></div></div>
+  <div class="card">
+    <div id="home">
+      <h1>Searchmas 🎅🎄</h1>
+      <div class="bar">
+        <input id="q" type="text" placeholder="Search…">
+        <button id="go">Search</button>
+      </div>
+    </div>
+    <div id="results" style="display:none;width:100%;">
+      <div class="bar">
+        <input id="qTop" type="text" placeholder="Search…">
+        <button id="goTop">Go</button>
+        <button id="back">Back</button>
+      </div>
+      <div class="tabs">
+        <button id="tabWeb" class="active">Web</button>
+        <button id="tabImages">Images</button>
+        <button id="tabVideos">Videos</button>
+        <button id="tabNews">News</button>
+        <button id="tabDiscuss">Discuss</button>
+      </div>
+      <div id="content"></div>
+    </div>
   </div>
-  <div id="results"></div>
 
-  <!-- script at end of body so elements exist -->
   <script>
-    function showResults() {
-      const query = document.getElementById('q').value.trim();
-      if (!query) { alert("Type something to search"); return; }
-      document.getElementById('results').innerHTML = "You searched for: " + query;
+    const wikiIcon='https://en.wikipedia.org/static/favicon/wikipedia.ico';
+    const bingIcon='https://image.pngaaa.com/505/5738505-middle.png';
+
+    function getQuery(){return (document.getElementById('qTop').value.trim()||document.getElementById('q').value.trim());}
+    function setActive(id){['tabWeb','tabImages','tabVideos','tabNews','tabDiscuss'].forEach(t=>document.getElementById(t).classList.remove('active'));document.getElementById(id).classList.add('active');}
+    function activeTab(){return ['tabWeb','tabImages','tabVideos','tabNews','tabDiscuss'].find(t=>document.getElementById(t).classList.contains('active'))||'tabWeb';}
+
+    function enterResults(){
+      const query=getQuery();
+      if(!query){alert("Type something to search");return;}
+      document.getElementById('home').style.display='none';
+      document.getElementById('results').style.display='block';
+      document.getElementById('qTop').value=query;
+      showWeb();
     }
 
-    document.getElementById('go').addEventListener('click', showResults);
-    document.getElementById('q').addEventListener('keydown', e => {
-      if (e.key === 'Enter') showResults();
+    function refreshActive(){
+      const id=activeTab();
+      if(id==='tabWeb') showWeb();
+      else if(id==='tabImages') showImages();
+      else if(id==='tabVideos') showVideos();
+      else if(id==='tabNews') showNews();
+      else if(id==='tabDiscuss') showDiscuss();
+    }
+
+    function item(label,url,iconUrl,isChatGPT=false){
+      const cls=isChatGPT?'chatgpt-icon':'';
+      return `<div class="item"><img src="${iconUrl}" class="${cls}" alt=""><a href="${url}" target="_blank">${label}</a></div>`;
+    }
+
+    function showWeb(){
+      const query=getQuery(); if(!query) return;
+      setActive('tabWeb');
+      document.getElementById('content').innerHTML =
+        item('Google: '+query,'https://www.google.com/search?q='+encodeURIComponent(query),'https://www.google.com/favicon.ico')+
+        item('ChatGPT: '+query,'https://chat.openai.com/?q='+encodeURIComponent(query),'https://chat.openai.com/favicon.ico',true)+
+        item('Wikipedia: '+query,'https://en.wikipedia.org/wiki/'+encodeURIComponent(query),wikiIcon)+
+        item('Bing: '+query,'https://www.bing.com/search?q='+encodeURIComponent(query),bingIcon);
+    }
+
+    function showImages(){
+      const query=getQuery(); if(!query) return;
+      setActive('tabImages');
+      document.getElementById('content').innerHTML = '<p>Image search placeholder for: '+query+'</p>';
+    }
+
+    function showVideos(){
+      const query=getQuery(); if(!query) return;
+      setActive('tabVideos');
+      document.getElementById('content').innerHTML =
+        item('YouTube: '+query,'https://www.youtube.com/results?search_query='+encodeURIComponent(query),'https://www.youtube.com/favicon.ico')+
+        item('Netflix: '+query,'https://www.netflix.com/search?q='+encodeURIComponent(query),'https://assets.nflxext.com/us/ffe/siteui/common/icons/nficon2016.ico');
+    }
+
+    function showNews(){
+      const query=getQuery(); if(!query) return;
+      setActive('tabNews');
+      document.getElementById('content').innerHTML =
+        item('Google News: '+query,'https://news.google.com/search?q='+encodeURIComponent(query),'https://www.gstatic.com/images/branding/product/2x/news_96dp.png')+
+        item('Wikipedia Current Events','https://en.wikipedia.org/wiki/Portal:Current_events',wikiIcon);
+    }
+
+    function showDiscuss(){
+      const query=getQuery(); if(!query) return;
+      setActive('tabDiscuss');
+      document.getElementById('content').innerHTML =
+        item('Reddit: '+query,'https://www.reddit.com/search/?q='+encodeURIComponent(query),'https://www.redditstatic.com/desktop2x/img/favicon/favicon-32x32.png')+
+        item('Quora: '+query,'https://www.quora.com/search?q='+encodeURIComponent(query),'https://www.quora.com/favicon.ico');
+    }
+
+    // Attach listeners after DOM is loaded
+    document.getElementById('go').addEventListener('click', enterResults);
+    document.getElementById('q').addEventListener('keydown', e=>{if(e.key==='Enter') enterResults();});
+    document.getElementById('goTop').addEventListener('click', refreshActive);
+    document.getElementById('qTop').addEventListener('keydown', e=>{if(e.key==='Enter') refreshActive();});
+    document.getElementById('back').addEventListener('click', ()=> {
+      document.getElementById('results').style.display='none';
+      document.getElementById('home').style.display='block';
+      document.getElementById('qTop').value='';
     });
   </script>
 </body>
