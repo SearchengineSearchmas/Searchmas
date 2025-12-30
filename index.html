@@ -108,7 +108,8 @@
       content.innerHTML=
         item('Google: '+query,'https://www.google.com/search?q='+encodeURIComponent(query),'https://www.google.com/s2/favicons?domain=google.com')+
         item('ChatGPT: '+query,'https://chat.openai.com/?q='+encodeURIComponent(query),'https://chat.openai.com/favicon.ico')+
-        item('Gemini: '+query,'https://gemini.google.com/app/search?q='+encodeURIComponent(query),'https://www.google.com/s2/favicons?domain=gemini.google.com');
+        item('Gemini: '+query,'https://gemini.google.com/app/search?q='+encodeURIComponent(query),'https://www.google.com/s2/favicons?domain=gemini.google.com')+
+        item('Bing Search: '+query,'https://www.bing.com/search?q='+encodeURIComponent(query),'https://www.bing.com/sa/simg/favicon-trans-bg-blue-mg.ico');
     }
 
     async function showImages(){
@@ -133,7 +134,7 @@
       setActive('tabVideos');
       content.innerHTML=
         item('YouTube: '+query,'https://www.youtube.com/results?search_query='+encodeURIComponent(query))+
-        item('Bing Videos: '+query,'https://www.bing.com/videos/search?q='+encodeURIComponent(query));
+        item('Bing Videos: '+query,'https://www.bing.com/videos/search?q='+encodeURIComponent(query),'https://www.bing.com/sa/simg/favicon-trans-bg-blue-mg.ico');
     }
 
     function showNews(){
@@ -142,7 +143,7 @@
       setActive('tabNews');
       content.innerHTML=
         item('Google News: '+query,'https://news.google.com/search?q='+encodeURIComponent(query),'https://www.gstatic.com/images/branding/product/2x/news_96dp.png')+
-        item('Bing News: '+query,'https://www.bing.com/news/search?q='+encodeURIComponent(query));
+        item('Bing News: '+query,'https://www.bing.com/news/search?q='+encodeURIComponent(query),'https://www.bing.com/sa/simg/favicon-trans-bg-blue-mg.ico');
     }
 
     function showDiscuss(){
@@ -151,7 +152,8 @@
       setActive('tabDiscuss');
       content.innerHTML=
         item('Reddit: '+query,'https://www.reddit.com/search/?q='+encodeURIComponent(query))+
-        item('Quora: '+query,'https://www.quora.com/search?q='+encodeURIComponent(query));
+        item('Quora: '+query,'https://www.quora.com/search?q='+encodeURIComponent(query))+
+        item('Bing Search: '+query,'https://www.bing.com/search?q='+encodeURIComponent(query),'https://www.bing.com/sa/simg/favicon-trans-bg-blue-mg.ico');
     }
   </script>
 </body>
