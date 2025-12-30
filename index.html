@@ -36,10 +36,21 @@
     gap: 16px;
   }
 
+  /* GOOGLE-LIKE RAINBOW TEXT */
   h1 {
     font-size: 48px;
     margin: 0;
-    color: white; /* WHITE Searchmas text */
+    font-weight: bold;
+    background: linear-gradient(
+      90deg,
+      #4285F4,
+      #EA4335,
+      #FBBC05,
+      #4285F4,
+      #34A853
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   input {
@@ -51,14 +62,9 @@
     outline: none;
   }
 
-  .hidden {
-    display: none;
-  }
+  .hidden { display: none; }
 
-  /* App */
-  .app {
-    padding: 16px;
-  }
+  .app { padding: 16px; }
 
   /* Tabs */
   .tabs {
@@ -76,9 +82,7 @@
     font-size: 14px;
   }
 
-  .tabs button:hover {
-    background: yellow;
-  }
+  .tabs button:hover { background: yellow; }
 
   .tabs button.active {
     background: #1a73e8;
@@ -120,10 +124,7 @@
 
 <body>
 
-<div class="bg">
-  <div></div>
-  <div></div>
-</div>
+<div class="bg"><div></div><div></div></div>
 
 <!-- HOME -->
 <div id="home" class="center">
@@ -173,7 +174,6 @@ function showTab(tab) {
   setActive(tab);
   content.innerHTML = "";
 
-  /* Vertical ONLY for Web & Discuss */
   if (tab === "web" || tab === "discuss") {
     content.className = "results-vertical";
   } else {
@@ -193,10 +193,11 @@ function showTab(tab) {
       </a>`;
   }
 
-  if (tab === "images") {
+  if (tab === "news") {
     content.innerHTML = `
-      <a href="https://unsplash.com/s/photos/${encodeURIComponent(query)}" target="_blank">
-        View images on Unsplash
+      <a href="https://news.google.com/search?q=${encodeURIComponent(query)}" target="_blank">
+        <img src="https://static.vecteezy.com/system/resources/previews/022/613/029/large_2x/google-news-icon-logo-symbol-free-png.png">
+        Google News
       </a>`;
   }
 
@@ -204,14 +205,6 @@ function showTab(tab) {
     content.innerHTML = `
       <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(query)}" target="_blank">
         <img src="https://www.youtube.com/favicon.ico"> YouTube
-      </a>`;
-  }
-
-  if (tab === "news") {
-    content.innerHTML = `
-      <a href="https://news.google.com/search?q=${encodeURIComponent(query)}" target="_blank">
-        <img src="https://static.vecteezy.com/system/resources/previews/022/613/029/large_2x/google-news-icon-logo-symbol-free-png.png">
-        Google News
       </a>`;
   }
 
@@ -234,9 +227,7 @@ topSearch.addEventListener("keydown", e => {
   if (e.key === "Enter") startSearch(topSearch.value);
 });
 
-tabs.forEach(b => {
-  b.addEventListener("click", () => showTab(b.dataset.tab));
-});
+tabs.forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
 </script>
 
 </body>
