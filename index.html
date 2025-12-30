@@ -56,7 +56,6 @@
   </div>
 
   <script>
-    const bingIcon='https://companieslogo.com/img/orig/bing-09dcb19f.png?t=1700061799&download=true';
     const geminiIcon='https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/google-gemini-icon.png';
     const unsplashKey='YOUR_UNSPLASH_ACCESS_KEY'; // replace with your Unsplash key
 
@@ -93,7 +92,6 @@
       document.getElementById('content').innerHTML =
         item('Google: '+query,'https://www.google.com/search?q='+encodeURIComponent(query),'https://www.google.com/favicon.ico')+
         item('ChatGPT: '+query,'https://chat.openai.com/?q='+encodeURIComponent(query),'https://chat.openai.com/favicon.ico',true)+
-        item('Bing: '+query,'https://www.bing.com/search?q='+encodeURIComponent(query),bingIcon)+
         item('Gemini: '+query,'https://gemini.google.com/app/search?q='+encodeURIComponent(query),geminiIcon);
     }
 
@@ -137,8 +135,10 @@
         item('Quora: '+query,'https://www.quora.com/search?q='+encodeURIComponent(query),'https://www.quora.com/favicon.ico');
     }
 
-    // Attach listeners after DOM is loaded
+    // Attach listeners
     document.getElementById('go').addEventListener('click', enterResults);
     document.getElementById('q').addEventListener('keydown', e=>{if(e.key==='Enter') enterResults();});
     document.getElementById('goTop').addEventListener('click', refreshActive);
-    document.getElementById('qTop').addEventListener('keydown
+    document.getElementById('qTop').addEventListener('keydown', e=>{if(e.key==='Enter') refreshActive();});
+    document.getElementById('back').addEventListener('click', ()=> {
+      document.getElementById('results').
