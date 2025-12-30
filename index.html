@@ -26,8 +26,6 @@
     .item a:hover {text-decoration:underline;}
     .photo-grid {display:grid;grid-template-columns:repeat(4,1fr);gap:10px;justify-items:center;}
     .photo-grid img {width:120px;height:120px;object-fit:cover;border-radius:8px;background:#222;}
-    #copyBtn,#copyBtnResults {margin-top:12px;padding:8px 12px;border:none;border-radius:6px;background:#444;color:#fff;cursor:pointer;}
-    #copyBtn:hover,#copyBtnResults:hover {background:#666;}
   </style>
 </head>
 <body>
@@ -39,7 +37,6 @@
         <input id="q" type="text" placeholder="Search…">
         <button id="go">Search</button>
       </div>
-      <button id="copyBtn">Copy</button>
     </div>
     <div id="results" style="display:none;width:100%;">
       <div class="bar">
@@ -55,7 +52,6 @@
         <button id="tabDiscuss">Discuss</button>
       </div>
       <div id="content"></div>
-      <button id="copyBtnResults">Copy</button>
     </div>
   </div>
   <script>
@@ -139,4 +135,8 @@
     // Attach listeners after DOM is ready
     window.onload = () => {
       document.getElementById('go').addEventListener('click', enterResults);
-      document.getElementById('q').addEventListener('keydown
+      document.getElementById('q').addEventListener('keydown', e=>{if(e.key==='Enter') enterResults();});
+      document.getElementById('goTop').addEventListener('click', refreshActive);
+      document.getElementById('qTop').addEventListener('keydown', e=>{if(e.key==='Enter') refreshActive();});
+      document.getElementById('back').addEventListener('click', ()=> {
+        document.getElementById('results
