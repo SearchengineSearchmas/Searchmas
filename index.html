@@ -26,9 +26,6 @@
     .item a:hover {text-decoration:underline;}
     .photo-grid {display:grid;grid-template-columns:repeat(4,1fr);gap:10px;justify-items:center;}
     .photo-grid img {width:120px;height:120px;object-fit:cover;border-radius:8px;background:#222;}
-    /* style for copy button */
-    #copyBtn {margin-top:12px;padding:8px 12px;border:none;border-radius:6px;background:#444;color:#fff;cursor:pointer;}
-    #copyBtn:hover {background:#666;}
   </style>
 </head>
 <body>
@@ -40,7 +37,6 @@
         <input id="q" type="text" placeholder="Search…">
         <button id="go">Search</button>
       </div>
-      <button id="copyBtn">Copy</button>
     </div>
     <div id="results" style="display:none;width:100%;">
       <div class="bar">
@@ -56,7 +52,6 @@
         <button id="tabDiscuss">Discuss</button>
       </div>
       <div id="content"></div>
-      <button id="copyBtn">Copy</button>
     </div>
   </div>
   <script>
@@ -72,14 +67,6 @@
     document.getElementById('goTop').onclick = refreshActive;
     qTop.addEventListener('keydown', e=>{if(e.key==='Enter') refreshActive();});
     document.getElementById('back').onclick = ()=>{results.style.display='none';home.style.display='block';qTop.value='';};
-
-    // copy button logic
-    document.querySelectorAll('#copyBtn').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        const text=getQuery();
-        navigator.clipboard.writeText(text).then(()=>alert("Copied: "+text));
-      });
-    });
 
     const tabs=['tabWeb','tabImages','tabVideos','tabNews','tabDiscuss'];
     tabs.forEach(id=>{document.getElementById(id).addEventListener('click', ()=>{setActive(id);refreshActive();});});
@@ -151,4 +138,4 @@
       const query=getQuery(); if(!query) return;
       setActive('tabDiscuss');
       content.innerHTML =
-        item('Reddit: '+query,'https://www.reddit.com/search/?q='+encodeURIComponent(query),'https://
+        item('Reddit: '+query,'https://www.reddit.com/search/?q='+encodeURIComponent(query),'https://www.redditstatic.com/desktop2x/img/favicon
