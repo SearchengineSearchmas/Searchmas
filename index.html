@@ -23,8 +23,19 @@
     .item img {width:24px;height:24px;object-fit:contain;background:#fff;border-radius:50%;padding:4px;}
     .item a {color:#fff;text-decoration:none;font-weight:bold;}
     .item a:hover {text-decoration:underline;}
-    .photo-grid {display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-    .photo-grid img {width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px;background:#222;}
+    .photo-grid {
+      display:grid;
+      grid-template-columns:repeat(4, 1fr);
+      gap:10px;
+      justify-items:center;
+    }
+    .photo-grid img {
+      width:150px;
+      height:150px;
+      object-fit:cover;
+      border-radius:8px;
+      background:#222;
+    }
   </style>
 </head>
 <body>
@@ -151,10 +162,4 @@
       if(!query) return;
       setActive('tabDiscuss');
       content.innerHTML=
-        item('Reddit: '+query,'https://www.reddit.com/search/?q='+encodeURIComponent(query))+
-        item('Quora: '+query,'https://www.quora.com/search?q='+encodeURIComponent(query))+
-        item('Bing Search: '+query,'https://www.bing.com/search?q='+encodeURIComponent(query),'https://www.bing.com/sa/simg/favicon-trans-bg-blue-mg.ico');
-    }
-  </script>
-</body>
-</html>
+        item('Reddit: '+query
