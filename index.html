@@ -1,181 +1,224 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Searchmas</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <title>Searchmas Search Engine</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<style>
-* { box-sizing: border-box; }
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: #111;
+      color: #eee;
+    }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f172a;
-  color: white;
-  text-align: center;
-}
+    .split {
+      display: flex;
+      height: 100vh;
+    }
 
-header {
-  padding: 20px;
-}
+    .half {
+      flex: 1;
+      background: url("https://cdn.fcglcdn.com/brainbees/images/products/583x720/19208325a.webp")
+                  center / cover no-repeat;
+    }
 
-h1 {
-  font-size: 42px;
-  margin: 10px 0;
-  background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
-  -webkit-background-clip: text;
-  color: transparent;
-}
+    .card {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(900px, 92vw);
+      padding: 20px;
+      background: rgba(0,0,0,0.65);
+      border-radius: 16px;
+    }
 
-.search-box {
-  max-width: 500px;
-  margin: 0 auto;
-}
+    h1 {
+      margin: 0 0 12px;
+      text-align: center;
+    }
 
-input {
-  width: 100%;
-  padding: 12px;
-  font-size: 18px;
-  border-radius: 8px;
-  border: none;
-}
+    .searchbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
 
-.tabs {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin: 15px 0;
-}
+    .searchbar input {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background: #1b1b1b;
+      color: #fff;
+      font-size: 16px;
+    }
 
-.tab {
-  padding: 10px 16px;
-  margin: 5px;
-  border-radius: 6px;
-  background: white;
-  color: black;
-  cursor: pointer;
-  font-size: 18px;
-}
+    .searchbar button {
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: none;
+      background: #ff5ca8;
+      color: #fff;
+      cursor: pointer;
+    }
 
-.tab:hover {
-  background: yellow;
-}
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
 
-.tab.active {
-  background: #3b82f6;
-  color: white;
-}
+    .tabs button {
+      padding: 8px 12px;
+      border-radius: 6px;
+      background: #333;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
 
-.results {
-  padding: 15px;
-}
+    .tabs button.active {
+      background: #ff5ca8;
+    }
 
-.links a {
-  display: block;
-  font-size: 22px;
-  margin: 15px 0;
-  color: #38bdf8;
-  text-decoration: none;
-}
+    .item {
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-.images {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 10px;
-}
+    .item img {
+      width: 32px;
+      height: 32px;
+    }
 
-.images img {
-  width: 100%;
-  border-radius: 8px;
-}
-</style>
+    .item a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .desc {
+      font-size: 0.9em;
+      color: #ccc;
+      margin-left: 42px;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+    }
+
+    .photo-grid img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+  </style>
 </head>
 
 <body>
+  <div class="split">
+    <div class="half"></div>
+    <div class="half"></div>
 
-<header>
-  <h1>Searchmas</h1>
+    <div class="card">
+      <div id="home">
+        <h1>Searchmas</h1>
+        <div class="searchbar">
+          <input id="query" placeholder="Search the web…" />
+          <button onclick="enterResults()">Search</button>
+        </div>
+      </div>
 
-  <div class="search-box">
-    <input id="query" placeholder="Search anything..." />
+      <div id="results" style="display:none;">
+        <div class="searchbar">
+          <input id="queryTop" />
+          <button onclick="refresh()">Go</button>
+          <button onclick="goBack()">Back</button>
+        </div>
+
+        <div class="tabs">
+          <button id="web" class="active" onclick="showWeb()">Web</button>
+          <button onclick="showImages()">Images</button>
+          <button onclick="showVideos()">Videos</button>
+          <button onclick="showNews()">News</button>
+          <button onclick="showDiscuss()">Discuss</button>
+        </div>
+
+        <div id="content">Results appear here…</div>
+      </div>
+    </div>
   </div>
-
-  <div class="tabs">
-    <div class="tab active" onclick="setTab('web')">Web</div>
-    <div class="tab" onclick="setTab('images')">Images</div>
-    <div class="tab" onclick="setTab('videos')">Videos</div>
-    <div class="tab" onclick="setTab('news')">News</div>
-    <div class="tab" onclick="setTab('discuss')">Discuss</div>
-  </div>
-</header>
-
-<div class="results" id="results"></div>
 
 <script>
-var currentTab = "web";
-var API_KEY = "b6Om1yQejxS88kA2na-UYEct9zypZTOmAYlzJMbeEe0";
+  const home = document.getElementById("home");
+  const results = document.getElementById("results");
+  const content = document.getElementById("content");
 
-function setTab(tab) {
-  currentTab = tab;
-  var tabs = document.getElementsByClassName("tab");
-  for (var i = 0; i < tabs.length; i++) {
-    tabs[i].classList.remove("active");
-  }
-  event.target.classList.add("active");
-  search();
-}
-
-document.getElementById("query").addEventListener("keydown", function(e) {
-  if (e.key === "Enter") search();
-});
-
-function search() {
-  var q = document.getElementById("query").value.trim();
-  var r = document.getElementById("results");
-  r.innerHTML = "";
-
-  if (!q) return;
-
-  if (currentTab === "web") {
-    r.innerHTML = `
-      <div class="links">
-        <a href="https://www.google.com/search?q=${q}" target="_blank">🔍 Google</a>
-        <a href="https://en.wikipedia.org/wiki/Special:Search?search=${q}" target="_blank">📘 Wikipedia</a>
-        <a href="https://www.google.com/search?q=${q}+site:ai.google" target="_blank">🤖 Gemini</a>
-      </div>`;
+  function q() {
+    return document.getElementById("queryTop").value ||
+           document.getElementById("query").value;
   }
 
-  if (currentTab === "videos") {
-    window.open("https://www.youtube.com/results?search_query=" + q);
+  function enterResults() {
+    if (!q()) return;
+    home.style.display = "none";
+    results.style.display = "block";
+    document.getElementById("queryTop").value = q();
+    showWeb();
   }
 
-  if (currentTab === "news") {
-    window.open("https://news.google.com/search?q=" + q);
+  function goBack() {
+    results.style.display = "none";
+    home.style.display = "block";
   }
 
-  if (currentTab === "discuss") {
-    r.innerHTML = `
-      <div class="links">
-        <a href="https://www.reddit.com/search/?q=${q}" target="_blank">👽 Reddit</a>
-        <a href="https://www.quora.com/search?q=${q}" target="_blank">❓ Quora</a>
-      </div>`;
+  function refresh() {
+    showWeb();
   }
 
-  if (currentTab === "images") {
-    fetch("https://api.unsplash.com/search/photos?query=" + q + "&per_page=18&client_id=" + API_KEY)
-      .then(res => res.json())
-      .then(data => {
-        var html = '<div class="images">';
-        for (var i = 0; i < data.results.length; i++) {
-          html += `<img src="${data.results[i].urls.small}">`;
-        }
-        html += "</div>";
-        r.innerHTML = html;
-      });
+  function showWeb() {
+    const s = encodeURIComponent(q());
+    content.innerHTML =
+      `<div class="item"><img src="https://www.google.com/favicon.ico"><a href="https://google.com/search?q=${s}" target="_blank">Google</a></div>
+       <div class="item"><img src="https://www.bing.com/favicon.ico"><a href="https://bing.com/search?q=${s}" target="_blank">Bing</a></div>
+       <div class="item"><img src="https://chat.openai.com/favicon.ico"><a href="https://chat.openai.com/?q=${s}" target="_blank">ChatGPT</a></div>`;
   }
-}
+
+  async function showImages() {
+    const s = encodeURIComponent(q());
+    const res = await fetch(`https://api.unsplash.com/search/photos?query=${s}&per_page=12&client_id=b6Om1yQejxS88kA2na-UYEct9zypZTOmAYlzJMbeEe0`);
+    const data = await res.json();
+    content.innerHTML =
+      `<div class="photo-grid">${data.results.map(i =>
+        `<img src="${i.urls.small}">`).join("")}</div>`;
+  }
+
+  function showVideos() {
+    const s = encodeURIComponent(q());
+    content.innerHTML =
+      `<a href="https://youtube.com/results?search_query=${s}" target="_blank">YouTube results</a>`;
+  }
+
+  function showNews() {
+    const s = encodeURIComponent(q());
+    content.innerHTML =
+      `<a href="https://news.google.com/search?q=${s}" target="_blank">Google News</a>`;
+  }
+
+  function showDiscuss() {
+    const s = encodeURIComponent(q());
+    content.innerHTML =
+      `<a href="https://reddit.com/search/?q=${s}" target="_blank">Reddit</a>`;
+  }
 </script>
-
 </body>
 </html>
