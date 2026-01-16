@@ -33,52 +33,56 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 16px;
+    gap: 18px;
   }
 
+  /* Rainbow Searchmas */
   h1 {
-    font-size: 48px;
+    font-size: 56px;
     margin: 0;
-    color: white; /* WHITE Searchmas text */
+    font-weight: bold;
+    background: linear-gradient(
+      90deg,
+      #4285F4,
+      #EA4335,
+      #FBBC05,
+      #4285F4,
+      #34A853
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   input {
-    width: 360px;
-    padding: 12px 16px;
-    font-size: 16px;
-    border-radius: 20px;
+    width: 420px;
+    padding: 14px 18px;
+    font-size: 18px;
+    border-radius: 24px;
     border: 1px solid #ccc;
     outline: none;
   }
 
-  .hidden {
-    display: none;
-  }
+  .hidden { display: none; }
 
-  /* App */
-  .app {
-    padding: 16px;
-  }
+  .app { padding: 20px; }
 
   /* Tabs */
   .tabs {
     display: flex;
-    gap: 10px;
-    margin-top: 12px;
+    gap: 12px;
+    margin-top: 14px;
   }
 
   .tabs button {
-    padding: 6px 14px;
-    border-radius: 14px;
+    padding: 8px 18px;
+    border-radius: 18px;
     border: 1px solid #ccc;
     background: white;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px;
   }
 
-  .tabs button:hover {
-    background: yellow;
-  }
+  .tabs button:hover { background: yellow; }
 
   .tabs button.active {
     background: #1a73e8;
@@ -87,16 +91,16 @@
 
   /* Results */
   .results-vertical {
-    margin-top: 24px;
+    margin-top: 28px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 18px;
   }
 
   .results-horizontal {
-    margin-top: 24px;
+    margin-top: 28px;
     display: flex;
-    gap: 20px;
+    gap: 24px;
     flex-wrap: wrap;
   }
 
@@ -104,26 +108,24 @@
   .results-horizontal a {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 16px;
     text-decoration: none;
     color: black;
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 20px;   /* BIG TEXT */
   }
 
   .results-vertical img,
   .results-horizontal img {
-    width: 18px;
-    height: 18px;
+    width: 32px;      /* BIG ICONS */
+    height: 32px;
   }
 </style>
 </head>
 
 <body>
 
-<div class="bg">
-  <div></div>
-  <div></div>
-</div>
+<div class="bg"><div></div><div></div></div>
 
 <!-- HOME -->
 <div id="home" class="center">
@@ -173,7 +175,6 @@ function showTab(tab) {
   setActive(tab);
   content.innerHTML = "";
 
-  /* Vertical ONLY for Web & Discuss */
   if (tab === "web" || tab === "discuss") {
     content.className = "results-vertical";
   } else {
@@ -193,10 +194,11 @@ function showTab(tab) {
       </a>`;
   }
 
-  if (tab === "images") {
+  if (tab === "news") {
     content.innerHTML = `
-      <a href="https://unsplash.com/s/photos/${encodeURIComponent(query)}" target="_blank">
-        View images on Unsplash
+      <a href="https://news.google.com/search?q=${encodeURIComponent(query)}" target="_blank">
+        <img src="https://static.vecteezy.com/system/resources/previews/022/613/029/large_2x/google-news-icon-logo-symbol-free-png.png">
+        Google News
       </a>`;
   }
 
@@ -204,14 +206,6 @@ function showTab(tab) {
     content.innerHTML = `
       <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(query)}" target="_blank">
         <img src="https://www.youtube.com/favicon.ico"> YouTube
-      </a>`;
-  }
-
-  if (tab === "news") {
-    content.innerHTML = `
-      <a href="https://news.google.com/search?q=${encodeURIComponent(query)}" target="_blank">
-        <img src="https://static.vecteezy.com/system/resources/previews/022/613/029/large_2x/google-news-icon-logo-symbol-free-png.png">
-        Google News
       </a>`;
   }
 
@@ -234,9 +228,7 @@ topSearch.addEventListener("keydown", e => {
   if (e.key === "Enter") startSearch(topSearch.value);
 });
 
-tabs.forEach(b => {
-  b.addEventListener("click", () => showTab(b.dataset.tab));
-});
+tabs.forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
 </script>
 
 </body>
