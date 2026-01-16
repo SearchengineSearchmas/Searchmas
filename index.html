@@ -6,11 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    min-height: 100vh;
-  }
+  body { margin:0; font-family: Arial, sans-serif; min-height:100vh; }
 
   /* Background */
   .bg {
@@ -36,7 +32,6 @@
     gap: 18px;
   }
 
-  /* Rainbow Searchmas */
   h1 {
     font-size: 56px;
     margin: 0;
@@ -62,8 +57,7 @@
     outline: none;
   }
 
-  .hidden { display: none; }
-
+  .hidden { display:none; }
   .app { padding: 20px; }
 
   /* Tabs */
@@ -83,11 +77,7 @@
   }
 
   .tabs button:hover { background: yellow; }
-
-  .tabs button.active {
-    background: #1a73e8;
-    color: white;
-  }
+  .tabs button.active { background:#1a73e8; color:white; }
 
   /* Results */
   .results-vertical {
@@ -112,13 +102,26 @@
     text-decoration: none;
     color: black;
     font-weight: 600;
-    font-size: 20px;   /* BIG TEXT */
+    font-size: 20px;
   }
 
   .results-vertical img,
   .results-horizontal img {
-    width: 32px;      /* BIG ICONS */
+    width: 32px;
     height: 32px;
+  }
+
+  /* Image grid */
+  .image-grid {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+  }
+
+  .image-grid img {
+    width: 100%;
+    border-radius: 14px;
   }
 </style>
 </head>
@@ -149,6 +152,7 @@
 </div>
 
 <script>
+const UNSPLASH_KEY = "b6Om1yQejxS88kA2na-UYEct9zypZTOmAYlzJMbeEe0";
 let query = "";
 
 const home = document.getElementById("home");
@@ -175,6 +179,21 @@ function showTab(tab) {
   setActive(tab);
   content.innerHTML = "";
 
+  if (tab === "images") {
+    content.className = "image-grid";
+    content.innerHTML = "Loading images…";
+
+    fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=20&client_id=${UNSPLASH_KEY}`)
+      .then(r => r.json())
+      .then(d => {
+        content.innerHTML = d.results
+          .map(img => `<img src="${img.urls.regular}" alt="">`)
+          .join("");
+      })
+      .catch(() => content.innerHTML = "Failed to load images");
+    return;
+  }
+
   if (tab === "web" || tab === "discuss") {
     content.className = "results-vertical";
   } else {
@@ -194,18 +213,18 @@ function showTab(tab) {
       </a>`;
   }
 
+  if (tab === "videos") {
+    content.innerHTML = `
+      <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(query)}" target="_blank">
+        <img src="https://www.youtube.com/favicon.ico"> YouTube
+      </a>`;
+  }
+
   if (tab === "news") {
     content.innerHTML = `
       <a href="https://news.google.com/search?q=${encodeURIComponent(query)}" target="_blank">
         <img src="https://static.vecteezy.com/system/resources/previews/022/613/029/large_2x/google-news-icon-logo-symbol-free-png.png">
         Google News
-      </a>`;
-  }
-
-  if (tab === "videos") {
-    content.innerHTML = `
-      <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(query)}" target="_blank">
-        <img src="https://www.youtube.com/favicon.ico"> YouTube
       </a>`;
   }
 
