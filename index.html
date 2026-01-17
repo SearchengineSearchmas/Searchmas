@@ -67,6 +67,12 @@ input {
   padding: 16px;
 }
 
+#logo {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 8px;
+}
+
 #backBtn {
   display: inline-block;
   margin-bottom: 12px;
@@ -98,14 +104,16 @@ input {
 
 .resultArea {
   margin-top: 20px;
+  display: flex;
+  flex-direction: column; /* vertical buttons */
 }
 
 .buttonLink {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 8px;
   padding: 12px 18px;
-  margin: 6px;
+  margin: 6px 0;
   border-radius: 10px;
   text-decoration: none;
   background: #f3f3f3;
@@ -166,6 +174,7 @@ input {
 
 <!-- RESULTS -->
 <div id="results">
+  <img id="logo" src="https://brandlogos.net/wp-content/uploads/2025/03/gemini_icon-logo_brandlogos.net_aacx5-300x300.png" alt="Searchmas logo">
   <span id="backBtn" onclick="goBack()">← Back to Homepage</span>
   <input id="resultSearch" placeholder="Search again…" />
 
