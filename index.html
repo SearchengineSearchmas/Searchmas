@@ -12,6 +12,8 @@
       background-color: #fff;
       color: #333;
     }
+
+    /* Homepage */
     .homepage {
       text-align: center;
       padding-top: 15%;
@@ -39,17 +41,22 @@
       border: 1px solid #ccc;
     }
 
-    /* Results header */
+    /* Results */
+    .results {
+      background: url('Santa.png') left/50% no-repeat, url('Santa.png') right/50% no-repeat;
+      background-color: #fff;
+      min-height: 100vh;
+    }
     .results-header {
       display: flex;
       align-items: center;
       gap: 10px;
       padding: 10px;
       border-bottom: 1px solid #ccc;
-      background: #fff;
+      background: rgba(255,255,255,0.9);
     }
     .results-header button {
-      padding: 8px 12px;
+      padding: 6px 10px;
       border: 1px solid #ccc;
       background: #f9f9f9;
       border-radius: 4px;
@@ -61,16 +68,13 @@
     .results-header .brand {
       font-weight: bold;
       font-size: 18px;
-      color: #333;
     }
 
-    /* Tabs */
     .tabs {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
       border-bottom: 1px solid #ccc;
-      background: #fff;
+      background: rgba(255,255,255,0.9);
     }
     .tab {
       padding: 10px 16px;
@@ -82,7 +86,6 @@
       font-weight: bold;
     }
 
-    /* Content areas */
     .tab-content {
       display: none;
       padding: 10px;
@@ -91,7 +94,6 @@
       display: block;
     }
 
-    /* Link buttons with favicons */
     .link-button {
       display: inline-flex;
       align-items: center;
@@ -109,7 +111,6 @@
       width: 16px;
     }
 
-    /* Images grid */
     .images-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -120,26 +121,12 @@
       border-radius: 6px;
     }
 
-    /* Flights map */
     #flightMap {
       width: 100%;
       height: 420px;
       border-radius: 8px;
-      overflow: hidden;
-    }
-
-    @media (min-width: 768px) {
-      #flightMap { height: 520px; }
     }
   </style>
-
-  <!-- Leaflet CSS -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""
-  />
 </head>
 <body>
   <!-- Homepage -->
@@ -151,7 +138,7 @@
   </div>
 
   <!-- Results -->
-  <div id="results" style="display:none;">
+  <div class="results" id="results" style="display:none;">
     <div class="results-header">
       <button onclick="goHome()">Back</button>
       <img src="Santa.png" alt="Searchmas" class="logo">
@@ -169,10 +156,10 @@
 
     <div id="all" class="tab-content active">
       <button class="link-button" onclick="window.open('https://www.google.com/search?q='+getQuery())">
-        <img src="https://www.google.com/favicon.ico" alt=""> Google
+        <img src="https://www.google.com/favicon.ico"> Google
       </button>
       <button class="link-button" onclick="window.open('https://www.bing.com/search?q='+getQuery())">
-        <img src="https://www.bing.com/favicon.ico" alt=""> Bing
+        <img src="https://www.bing.com/favicon.ico"> Bing
       </button>
     </div>
 
@@ -182,7 +169,7 @@
 
     <div id="videos" class="tab-content">
       <button class="link-button" onclick="window.open('https://www.youtube.com/results?search_query='+getQuery())">
-        <img src="https://www.youtube.com/favicon.ico" alt=""> YouTube
+        <img src="https://www.youtube.com/favicon.ico"> YouTube
       </button>
     </div>
 
@@ -192,29 +179,21 @@
 
     <div id="news" class="tab-content">
       <button class="link-button" onclick="window.open('https://news.google.com/search?q='+getQuery())">
-        <img src="https://www.google.com/favicon.ico" alt=""> Google News
+        <img src="https://www.google.com/favicon.ico"> Google News
       </button>
     </div>
 
     <div id="discussions" class="tab-content">
       <button class="link-button" onclick="window.open('https://www.reddit.com/search/?q='+getQuery())">
-        <img src="https://www.reddit.com/favicon.ico" alt=""> Reddit
+        <img src="https://www.reddit.com/favicon.ico"> Reddit
       </button>
       <button class="link-button" onclick="window.open('https://www.quora.com/search?q='+getQuery())">
-        <img src="https://www.quora.com/favicon.ico" alt=""> Quora
+        <img src="https://www.quora.com/favicon.ico"> Quora
       </button>
     </div>
   </div>
 
-  <!-- Leaflet JS -->
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin=""
-  ></script>
-
   <script>
-    // Enter triggers search
     document.getElementById('query').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') showResults();
     });
@@ -222,11 +201,30 @@
     function getQuery() {
       return document.getElementById('query').value;
     }
-
     function showResults() {
       document.getElementById('home').style.display = 'none';
       document.getElementById('results').style.display = 'block';
-
-      // Load Unsplash images
+      // Unsplash images
       fetch('https://api.unsplash.com/search/photos?query=' + encodeURIComponent(getQuery()) + '&client_id=1IF0KThuYgH722kFgZ5TaZ1tyckTiMUri6DxUSeZ-fk')
         .then(r => r.json())
+        .then(data => {
+          const grid = document.getElementById('imagesGrid');
+          grid.innerHTML = '';
+          data.results.forEach(photo => {
+            const img = document.createElement('img');
+            img.src = photo.urls.small;
+            grid.appendChild(img);
+          });
+        });
+    }
+    function goHome() {
+      document.getElementById('home').style.display = 'block';
+      document.getElementById('results').style.display = 'none';
+    }
+    function openTab(tabId) {
+      const tabs = document.querySelectorAll('.tab');
+      const contents = document.querySelectorAll('.tab-content');
+      tabs.forEach(t => t.classList.remove('active'));
+      contents.forEach(c => c.classList.remove('active'));
+      document.querySelector('.tab[onclick="openTab(\''+tabId+'\')"]').classList.add('active');
+      document.getElementById(tabId).class
