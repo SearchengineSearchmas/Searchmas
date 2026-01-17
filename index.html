@@ -186,7 +186,6 @@ input:focus { outline: none }
 
 <body>
 
-<!-- HOME -->
 <div id="home">
   <div class="logo">
     <span>S</span><span>e</span><span>a</span><span>r</span><span>c</span><span>h</span><span>m</span><span>a</span><span>s</span>
@@ -196,7 +195,6 @@ input:focus { outline: none }
   </div>
 </div>
 
-<!-- RESULTS -->
 <div id="results">
   <div class="topbar">
     <div class="back" onclick="goHome()">⬅</div>
@@ -207,31 +205,41 @@ input:focus { outline: none }
   </div>
 
   <div class="tabs">
-    <div class="tab" onclick="setTab('ai')">AI Mode</div>
-    <div class="tab active" onclick="setTab('all')">All</div>
-    <div class="tab" onclick="setTab('flights')">Flights</div>
-    <div class="tab" onclick="setTab('images')">Images</div>
-    <div class="tab" onclick="setTab('videos')">Videos</div>
-    <div class="tab" onclick="setTab('news')">News</div>
+    <div class="tab" data-tab="ai">AI Mode</div>
+    <div class="tab active" data-tab="all">All</div>
+    <div class="tab" data-tab="flights">Flights</div>
+    <div class="tab" data-tab="images">Images</div>
+    <div class="tab" data-tab="videos">Videos</div>
+    <div class="tab" data-tab="news">News</div>
   </div>
 
   <div class="content" id="content"></div>
 </div>
 
 <script>
-var tab = "all";
-var UNSPLASH = "1IF0KThuYgH722kFgZ5TaZ1tyckTiMUri6DxUSeZ-fk";
-var YT = "AIzaSyBKN7qNWVOSjIf040epQA579G29IzPxqpI";
-var GEMINI_KEY = "AIzaSyD90LLYotrBiOhaM6YUecNVauYosFDL5kI";
+let tab = "all";
 
-var qHome = document.getElementById("qHome");
-var qTop = document.getElementById("qTop");
-var home = document.getElementById("home");
-var results = document.getElementById("results");
-var content = document.getElementById("content");
+const GEMINI_KEY = "AIzaSyD90LLYotrBiOhaM6YUecNVauYosFDL5kI";
+const UNSPLASH = "1IF0KThuYgH722kFgZ5TaZ1tyckTiMUri6DxUSeZ-fk";
+const YT = "AIzaSyBKN7qNWVOSjIf040epQA579G29IzPxqpI";
 
-qHome.onkeydown = e => { if (e.key === "Enter") enter(); };
-qTop.onkeydown = e => { if (e.key === "Enter") search(); };
+const qHome = document.getElementById("qHome");
+const qTop = document.getElementById("qTop");
+const home = document.getElementById("home");
+const results = document.getElementById("results");
+const content = document.getElementById("content");
+
+qHome.onkeydown = e => e.key === "Enter" && enter();
+qTop.onkeydown = e => e.key === "Enter" && search();
+
+document.querySelectorAll(".tab").forEach(t => {
+  t.onclick = () => {
+    tab = t.dataset.tab;
+    document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+    t.classList.add("active");
+    search();
+  };
+});
 
 function enter(){
   if(!qHome.value) return;
@@ -246,15 +254,8 @@ function goHome(){
   home.style.display = "flex";
 }
 
-function setTab(t){
-  tab = t;
-  [...document.getElementsByClassName("tab")].forEach(el => el.className = "tab");
-  event.target.className = "tab active";
-  search();
-}
-
 function search(){
-  var q = qTop.value;
+  const q = qTop.value;
   content.innerHTML = "";
 
   if(tab === "ai"){
@@ -278,15 +279,15 @@ function search(){
     .catch(() => {
       document.getElementById("aiBox").innerText = "Error contacting AI.";
     });
+
     return;
   }
 
-  var enc = encodeURIComponent(q);
+  const enc = encodeURIComponent(q);
 
   if(tab === "all"){
     content.innerHTML =
       "<div class='engine' onclick=\"window.open('https://www.bing.com/search?q="+enc+"')\"><img src='https://www.bing.com/favicon.ico'> Bing</div>" +
-      "<div class='engine' onclick=\"window.open('https://gemini.google.com')\"><img src='https://brandlogos.net/wp-content/uploads/2025/03/gemini_icon-logo_brandlogos.net_aacx5-300x300.png'> Gemini</div>" +
       "<div class='engine' onclick=\"window.open('https://duckduckgo.com/?q="+enc+"')\"><img src='https://duckduckgo.com/favicon.ico'> DuckDuckGo</div>";
   }
 
