@@ -7,23 +7,27 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
+      background: url('Santa.png') left/50% no-repeat, url('Santa.png') right/50% no-repeat;
       background-color: #fff;
       color: #333;
     }
-    .homepage {
-      text-align: center;
-      padding-top: 15%;
+    header {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      border-bottom: 1px solid #ccc;
     }
-    .title {
-      font-size: 48px;
+    header img {
+      height: 40px;
+      margin-right: 10px;
+    }
+    header h1 {
+      font-size: 28px;
       font-weight: bold;
-      color: #4285f4; /* Google-style blue */
-    }
-    .title span {
-      color: #ea4335; /* highlight one letter */
     }
     .search-box {
-      margin-top: 20px;
+      text-align: center;
+      margin: 20px;
     }
     input[type="text"] {
       width: 50%;
@@ -42,34 +46,30 @@
       color: white;
       cursor: pointer;
     }
-    .results {
-      display: none;
-      margin: 20px auto;
-      width: 80%;
-    }
     .tabs {
       display: flex;
+      justify-content: center;
       border-bottom: 1px solid #ccc;
-      margin-bottom: 20px;
     }
     .tab {
       padding: 10px 20px;
       cursor: pointer;
-      color: #555;
+      text-align: center;
     }
     .tab.active {
       border-bottom: 3px solid #4285f4;
       font-weight: bold;
-      color: #000;
+    }
+    .tab-desc {
+      font-size: 12px;
+      color: #666;
     }
     .tab-content {
       display: none;
+      padding: 20px;
     }
     .tab-content.active {
       display: block;
-    }
-    .back {
-      margin-bottom: 20px;
     }
     .link-button {
       display: block;
@@ -80,67 +80,102 @@
       text-align: left;
       cursor: pointer;
     }
+    .images-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+    }
+    .images-grid img {
+      width: 100%;
+      border-radius: 8px;
+    }
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+    }
   </style>
 </head>
 <body>
-  <div class="homepage" id="home">
-    <div class="title">S<span>e</span>archmas</div>
-    <div class="search-box">
-      <input type="text" id="query" placeholder="Search...">
-      <button onclick="showResults()">Search</button>
+  <header>
+    <img src="Santa.png" alt="Searchmas Logo">
+    <h1>
+      <span style="color:#4285f4;">S</span>
+      <span style="color:#ea4335;">e</span>
+      <span style="color:#fbbc05;">a</span>
+      <span style="color:#34a853;">r</span>
+      <span style="color:#4285f4;">c</span>
+      <span style="color:#ea4335;">h</span>
+      <span style="color:#fbbc05;">m</span>
+      <span style="color:#34a853;">a</span>
+      <span style="color:#4285f4;">s</span>
+    </h1>
+  </header>
+
+  <div class="search-box">
+    <input type="text" id="query" placeholder="Search...">
+    <button onclick="showResults()">Search</button>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="openTab('all')">
+      All
+      <div class="tab-desc">Google & Bing results</div>
+    </div>
+    <div class="tab" onclick="openTab('images')">
+      Images
+      <div class="tab-desc">Unsplash photos</div>
+    </div>
+    <div class="tab" onclick="openTab('videos')">
+      Videos
+      <div class="tab-desc">YouTube search</div>
+    </div>
+    <div class="tab" onclick="openTab('flights')">
+      Flights
+      <div class="tab-desc">Live flight tracking</div>
+    </div>
+    <div class="tab" onclick="openTab('news')">
+      News
+      <div class="tab-desc">Google News</div>
+    </div>
+    <div class="tab" onclick="openTab('discussions')">
+      Discussions
+      <div class="tab-desc">Reddit & Quora</div>
     </div>
   </div>
 
-  <div class="results" id="results">
-    <h2 style="color:#4285f4;">Searchmas</h2>
-    <div class="back"><button onclick="goHome()">Back to Homepage</button></div>
+  <div id="all" class="tab-content active">
+    <button class="link-button" onclick="window.open('https://www.google.com/search?q='+getQuery())">Google – Powerful global search engine</button>
+    <button class="link-button" onclick="window.open('https://www.bing.com/search?q='+getQuery())">Bing – Microsoft’s search platform</button>
+  </div>
 
-    <div class="tabs">
-      <div class="tab active" onclick="openTab('all')">All</div>
-      <div class="tab" onclick="openTab('images')">Images</div>
-      <div class="tab" onclick="openTab('videos')">Videos</div>
-      <div class="tab" onclick="openTab('flights')">Flights</div>
-      <div class="tab" onclick="openTab('news')">News</div>
-      <div class="tab" onclick="openTab('discussions')">Discussions</div>
-    </div>
+  <div id="images" class="tab-content">
+    <div class="images-grid" id="imagesGrid"></div>
+  </div>
 
-    <div id="all" class="tab-content active">
-      <button class="link-button" onclick="window.open('https://www.google.com/search?q='+getQuery())">Google – Powerful global search engine</button>
-      <button class="link-button" onclick="window.open('https://www.bing.com/search?q='+getQuery())">Bing – Microsoft’s search platform</button>
-    </div>
+  <div id="videos" class="tab-content">
+    <button class="link-button" onclick="window.open('https://www.youtube.com/results?search_query='+getQuery())">
+      YouTube – Video search and streaming
+    </button>
+  </div>
 
-    <div id="images" class="tab-content">
-      <button class="link-button" onclick="window.open('https://api.unsplash.com/search/photos?query='+getQuery()+'&client_id=1IF0KThuYgH722kFgZ5TaZ1tyckTiMUri6DxUSeZ-fk')">
-        Unsplash – Free high-quality images
-      </button>
-    </div>
+  <div id="flights" class="tab-content">
+    <iframe src="https://www.flightradar24.com/" title="Flightradar24"></iframe>
+  </div>
 
-    <div id="videos" class="tab-content">
-      <button class="link-button" onclick="window.open('https://www.youtube.com/results?search_query='+getQuery())">
-        YouTube – Video search and streaming
-      </button>
-    </div>
+  <div id="news" class="tab-content">
+    <button class="link-button" onclick="window.open('https://news.google.com/search?q='+getQuery())">
+      Google News – Latest headlines and coverage
+    </button>
+  </div>
 
-    <div id="flights" class="tab-content">
-      <button class="link-button" onclick="window.open('https://www.flightradar24.com/')">
-        Flightradar24 – Live flight tracking worldwide
-      </button>
-    </div>
-
-    <div id="news" class="tab-content">
-      <button class="link-button" onclick="window.open('https://news.google.com/search?q='+getQuery())">
-        Google News – Latest headlines and coverage
-      </button>
-    </div>
-
-    <div id="discussions" class="tab-content">
-      <button class="link-button" onclick="window.open('https://www.reddit.com/search/?q='+getQuery())">
-        Reddit – Community-driven discussions
-      </button>
-      <button class="link-button" onclick="window.open('https://www.quora.com/search?q='+getQuery())">
-        Quora – Q&A from experts and enthusiasts
-      </button>
-    </div>
+  <div id="discussions" class="tab-content">
+    <button class="link-button" onclick="window.open('https://www.reddit.com/search/?q='+getQuery())">
+      Reddit – Community-driven discussions
+    </button>
+    <button class="link-button" onclick="window.open('https://www.quora.com/search?q='+getQuery())">
+      Quora – Q&A from experts and enthusiasts
+    </button>
   </div>
 
   <script>
@@ -148,12 +183,17 @@
       return document.getElementById('query').value;
     }
     function showResults() {
-      document.getElementById('home').style.display = 'none';
-      document.getElementById('results').style.display = 'block';
-    }
-    function goHome() {
-      document.getElementById('home').style.display = 'block';
-      document.getElementById('results').style.display = 'none';
+      fetch('https://api.unsplash.com/search/photos?query=' + getQuery() + '&client_id=1IF0KThuYgH722kFgZ5TaZ1tyckTiMUri6DxUSeZ-fk')
+        .then(response => response.json())
+        .then(data => {
+          const grid = document.getElementById('imagesGrid');
+          grid.innerHTML = '';
+          data.results.forEach(photo => {
+            const img = document.createElement('img');
+            img.src = photo.urls.small;
+            grid.appendChild(img);
+          });
+        });
     }
     function openTab(tabId) {
       const tabs = document.querySelectorAll('.tab');
