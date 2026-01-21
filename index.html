@@ -5,6 +5,17 @@
 <title>Searchmas</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- FAVICON -->
+<link rel="icon" href="favicon.ico">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a73e8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Searchmas">
+<link rel="apple-touch-icon" href="favicon.ico">
+
 <style>
 html,body{
   margin:0;
@@ -119,7 +130,7 @@ input:focus{outline:none}
   height:36px;
 }
 
-/* IMAGES / VIDEOS */
+/* GRIDS */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
@@ -286,6 +297,13 @@ function search(){
     content.innerHTML=
       `<iframe class="flight-frame" src="https://www.flightradar24.com/simple"></iframe>`;
   }
+}
+</script>
+
+<!-- SERVICE WORKER -->
+<script>
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("sw.js");
 }
 </script>
 
