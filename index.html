@@ -5,209 +5,117 @@
 <title>Searchmas</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="icon" href="favicon.ico?v=999">
 <link rel="manifest" href="manifest.json">
+<link rel="icon" href="favicon.ico">
 <meta name="theme-color" content="#1a73e8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Searchmas">
 
 <style>
-html,body{margin:0;padding:0;width:100%;height:100%}
-body{
-  font-family:Arial,sans-serif;
-  color:#202124;
-  background:
-    url('Santa.png') left center / 50% 100vh no-repeat,
-    url('Santa.png') right center / 50% 100vh no-repeat;
-}
-#home{
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-}
-.logo{font-size:clamp(48px,10vw,80px);font-weight:bold}
-.search-box{width:100%;max-width:580px;padding:0 16px}
-input{
-  width:100%;padding:14px 20px;font-size:18px;
-  border-radius:24px;border:1px solid #dfe1e5
-}
-#results{display:none;padding:15px;max-width:1100px;margin:0 auto}
-.topbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.back{cursor:pointer;font-size:22px}
-.tabs{display:flex;gap:25px;margin:15px 0;border-bottom:1px solid #ddd;flex-wrap:wrap}
-.tab{cursor:pointer;color:#5f6368;padding:10px 0}
-.tab.active{color:#1a73e8;border-bottom:3px solid #1a73e8}
-.engine{display:flex;align-items:center;gap:14px;font-size:22px;margin:18px 0;cursor:pointer}
-.engine img{width:36px;height:36px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
-.grid img{width:100%;border-radius:8px}
-.flight-frame{width:100%;height:600px;border:none}
-@media (max-width:768px){
-  body{background:url('Santa.png') center/cover no-repeat}
-}
+html,body{margin:0;padding:0;width:100%;height:100%;font-family:Arial}
+
+/* WEBSITE MODE */
+#site{display:none;min-height:100vh;align-items:center;justify-content:center;flex-direction:column;text-align:center}
+#site input{padding:14px 20px;font-size:18px;border-radius:24px;border:1px solid #dfe1e5;width:80%;max-width:500px}
+
+/* PWA MODE */
+#pwa{display:none;height:100vh;flex-direction:column}
+#topbar{display:flex;padding:8px;background:#fff;border-bottom:1px solid #ddd}
+#urlbar{flex:1;padding:10px 14px;border-radius:20px;border:1px solid #ccc;font-size:16px}
+#browser{flex:1;position:relative}
+iframe{width:100%;height:100%;border:none}
+#bottom{display:flex;justify-content:space-around;padding:8px 0;border-top:1px solid #ddd;background:#fff}
+.btn{font-size:22px;cursor:pointer}
+#tabs{position:absolute;inset:0;background:#f5f5f5;display:none;flex-wrap:wrap;padding:10px}
+.tab-card{width:45%;margin:5px;padding:10px;background:white;border-radius:12px}
+.tab-card button{float:right}
 </style>
 </head>
 
 <body>
 
-<div id="home">
-  <div class="logo">Searchmas</div>
-  <form class="search-box" onsubmit="enter(event)">
-    <input id="qHome" placeholder="Search or type a URL">
-  </form>
+<!-- WEBSITE MODE -->
+<div id="site">
+  <h1>Searchmas</h1>
+  <input id="siteSearch" placeholder="Search the web" onkeydown="siteSearchEnter(event)">
 </div>
 
-<div id="results">
-  <div class="topbar">
-    <div class="back" onclick="goHome()">⬅</div>
-    <div>Searchmas</div>
-    <input id="qTop">
+<!-- PWA MODE -->
+<div id="pwa">
+  <div id="topbar">
+    <input id="urlbar" placeholder="Search or enter website" onkeydown="handleEnter(event)">
   </div>
-
-  <div class="tabs">
-    <div class="tab" data-tab="ai">AI Mode</div>
-    <div class="tab active" data-tab="all">All</div>
-    <div class="tab" data-tab="images">Images</div>
-    <div class="tab" data-tab="videos">Videos</div>
-    <div class="tab" data-tab="news">News</div>
-    <div class="tab" data-tab="flights">Flights</div>
+  <div id="browser">
+    <iframe id="view"></iframe>
+    <div id="tabs"></div>
   </div>
-
-  <div class="content" id="content"></div>
+  <div id="bottom">
+    <div class="btn" onclick="goBack()">⬅️</div>
+    <div class="btn" onclick="goForward()">➡️</div>
+    <div class="btn" onclick="newTab()">➕</div>
+    <div class="btn" onclick="toggleTabs()">🗂️</div>
+  </div>
 </div>
 
 <script>
-let tab="all";
-const UNSPLASH="Wsi2QpvPXyiNLfGRbZX8MwbDg7oqCQQFtibqIu02nWA";
-const YT="AIzaSyBKN7qNWVOSjIf040epQA579G29IzPxqpI";
+const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
-const qHome=document.getElementById("qHome");
-const qTop=document.getElementById("qTop");
-const home=document.getElementById("home");
-const results=document.getElementById("results");
-const content=document.getElementById("content");
+document.getElementById(isPWA ? "pwa" : "site").style.display="flex";
 
-function enter(e){
-  e.preventDefault();
-  if(!qHome.value.trim()) return;
-  qTop.value=qHome.value;
-  showResults();
-  updateURL();
-  search();
-}
-
-qTop.onkeydown=e=>{
+/* WEBSITE MODE LOGIC */
+function siteSearchEnter(e){
   if(e.key==="Enter"){
-    updateURL();
-    search();
-  }
-};
-
-document.querySelectorAll(".tab").forEach(t=>{
-  t.onclick=()=>setTab(t.dataset.tab);
-});
-
-function setTab(t){
-  tab=t;
-  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
-  document.querySelector(`.tab[data-tab="${t}"]`).classList.add("active");
-  search();
-}
-
-function showResults(){
-  home.style.display="none";
-  results.style.display="block";
-}
-
-function goHome(){
-  history.replaceState(null,"","./");
-  results.style.display="none";
-  home.style.display="flex";
-}
-
-function updateURL(){
-  const q=qTop.value.trim();
-  history.replaceState(null,"",`?q=${encodeURIComponent(q)}`);
-}
-
-function readQueryFromURL(){
-  const params=new URLSearchParams(window.location.search);
-  const q=params.get("q");
-  if(q){
-    qTop.value=q;
-    showResults();
-    search();
+    const q=e.target.value.trim();
+    if(q) window.location.href="?q="+encodeURIComponent(q);
   }
 }
 
-function search(){
-  const q=qTop.value.trim();
-  if(!q) return;
-  const enc=encodeURIComponent(q);
-  content.innerHTML="";
+/* PWA MODE LOGIC */
+let tabs=[],currentTab=0;
+const view=document.getElementById("view");
+const urlbar=document.getElementById("urlbar");
+const tabsView=document.getElementById("tabs");
 
-  if(tab==="ai"){
-    window.open("https://gemini.google.com","_blank");
-    return;
+function newTab(url="https://www.bing.com"){
+  tabs.push({url});
+  currentTab=tabs.length-1;
+  loadTab();
+}
+function loadTab(){
+  const tab=tabs[currentTab];
+  view.src=tab.url;
+  urlbar.value=tab.url;
+}
+function handleEnter(e){
+  if(e.key==="Enter"){
+    let val=urlbar.value.trim();
+    if(!val)return;
+    let url=val.startsWith("http")?val:"https://www.bing.com/search?q="+encodeURIComponent(val);
+    if(url.includes("google.com")){window.open(url,"_blank");return;}
+    tabs[currentTab].url=url;
+    loadTab();
   }
-
-  if(tab==="all"){
-    content.innerHTML=`
-      <div class="engine" onclick="window.open('https://www.google.com/search?q=${enc}')">
-        <img src="https://www.google.com/favicon.ico"> Google
-      </div>
-      <div class="engine" onclick="window.open('https://www.bing.com/search?q=${enc}')">
-        <img src="https://www.bing.com/favicon.ico"> Bing
-      </div>
-      <div class="engine" onclick="window.open('https://duckduckgo.com/?q=${enc}')">
-        <img src="https://duckduckgo.com/favicon.ico"> DuckDuckGo
+}
+function toggleTabs(){
+  tabsView.style.display=tabsView.style.display==="flex"?"none":"flex";
+  renderTabs();
+}
+function renderTabs(){
+  tabsView.innerHTML="";
+  tabs.forEach((t,i)=>{
+    tabsView.innerHTML+=`
+      <div class="tab-card">
+        <button onclick="closeTab(${i})">✖</button>
+        <div onclick="selectTab(${i})">${t.url}</div>
       </div>`;
-  }
-
-  if(tab==="images"){
-    fetch(`https://api.unsplash.com/search/photos?query=${enc}&per_page=18&client_id=${UNSPLASH}`)
-      .then(r=>r.json())
-      .then(d=>{
-        content.innerHTML=
-          `<div class="grid">${
-            d.results.map(i=>`<img src="${i.urls.small}">`).join("")
-          }</div>`;
-      });
-  }
-
-  if(tab==="videos"){
-    fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=12&q=${enc}&key=${YT}`)
-      .then(r=>r.json())
-      .then(d=>{
-        content.innerHTML=
-          `<div class="grid">${
-            d.items.map(v=>`
-              <div>
-                <a target="_blank" href="https://youtube.com/watch?v=${v.id.videoId}">
-                  <img src="${v.snippet.thumbnails.medium.url}">
-                </a>
-                <div>${v.snippet.title}</div>
-              </div>`).join("")
-          }</div>`;
-      });
-  }
-
-  if(tab==="news"){
-    content.innerHTML=`
-      <div class="engine" onclick="window.open('https://news.google.com/search?q=${enc}')">
-        <img src="https://static.vecteezy.com/system/resources/previews/022/613/029/large_2x/google-news-icon-logo-symbol-free-png.png">
-        Google News
-      </div>`;
-  }
-
-  if(tab==="flights"){
-    content.innerHTML=`<iframe class="flight-frame" src="https://www.flightradar24.com/simple"></iframe>`;
-  }
+  });
 }
+function selectTab(i){currentTab=i;tabsView.style.display="none";loadTab();}
+function closeTab(i){tabs.splice(i,1);if(!tabs.length)newTab();currentTab=Math.max(0,currentTab-1);loadTab();}
+function goBack(){try{view.contentWindow.history.back()}catch(e){}}
+function goForward(){try{view.contentWindow.history.forward()}catch(e){}}
 
-readQueryFromURL();
+if(isPWA)newTab();
 </script>
-
 </body>
 </html>
