@@ -7,7 +7,6 @@
 <body>
 
 <script>
-/* Fix browser redirect paths like /search?q=dog */
 (function(){
   if(location.pathname.includes("search")){
     const q=new URLSearchParams(location.search).get("q");
@@ -119,16 +118,16 @@ function showResults(q){
 
   const enc=encodeURIComponent(q);
   const engines=[
-    {name:"Google", url:`https://www.google.com/search?q=${enc}`, base:"google.com"},
-    {name:"Bing", url:`https://www.bing.com/search?q=${enc}`, base:"bing.com"},
-    {name:"DuckDuckGo", url:`https://duckduckgo.com/?q=${enc}`, base:"duckduckgo.com"}
+    {name:"Google", url:`https://www.google.com/search?q=${enc}`, domain:"google.com"},
+    {name:"Bing", url:`https://www.bing.com/search?q=${enc}`, domain:"bing.com"},
+    {name:"DuckDuckGo", url:`https://duckduckgo.com/?q=${enc}`, domain:"duckduckgo.com"}
   ];
 
   engines.forEach(e=>{
     res.innerHTML+=`
       <div class="result-item">
-        <div class="result-title" onclick="window.open('${e.url}')">${e.name} results for "${q}"</div>
-        <div class="result-url">${e.base}</div>
+        <div class="result-title" onclick="window.open('${e.url}')">${e.name}</div>
+        <div class="result-url">${e.domain}</div>
       </div>`;
   });
 }
