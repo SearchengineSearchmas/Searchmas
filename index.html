@@ -12,23 +12,51 @@
 <meta name="apple-mobile-web-app-title" content="Searchmas">
 
 <style>
-html,body{margin:0;padding:0;width:100%;height:100%;font-family:Arial}
+html,body{margin:0;padding:0;width:100%;height:100%;font-family:Arial,sans-serif}
 
 /* WEBSITE MODE */
-#site{display:none;min-height:100vh;align-items:center;justify-content:center;flex-direction:column;text-align:center}
-#site input{padding:14px 20px;font-size:18px;border-radius:24px;border:1px solid #dfe1e5;width:80%;max-width:500px}
+#site{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+#site input{
+  padding:14px 20px;
+  font-size:18px;
+  border-radius:24px;
+  border:1px solid #dfe1e5;
+  width:80%;
+  max-width:500px;
+}
 
-/* PWA MODE */
-#pwa{display:none;height:100vh;flex-direction:column}
-#topbar{display:flex;padding:8px;background:#fff;border-bottom:1px solid #ddd}
-#urlbar{flex:1;padding:10px 14px;border-radius:20px;border:1px solid #ccc;font-size:16px}
-#browser{flex:1;position:relative}
-iframe{width:100%;height:100%;border:none}
-#bottom{display:flex;justify-content:space-around;padding:8px 0;border-top:1px solid #ddd;background:#fff}
-.btn{font-size:22px;cursor:pointer}
-#tabs{position:absolute;inset:0;background:#f5f5f5;display:none;flex-wrap:wrap;padding:10px}
-.tab-card{width:45%;margin:5px;padding:10px;background:white;border-radius:12px}
-.tab-card button{float:right}
+/* LOGO */
+.logo{
+  font-size:64px;
+  font-weight:bold;
+  letter-spacing:-1px;
+  margin-bottom:20px;
+}
+.logo span.b{color:#4285f4}
+.logo span.r{color:#ea4335}
+.logo span.y{color:#fbbc05}
+.logo span.g{color:#34a853}
+
+/* RESULTS */
+#results{display:none;padding:15px;max-width:1100px;margin:0 auto}
+.topbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.back{cursor:pointer;font-size:22px}
+.tabs{display:flex;gap:25px;margin:15px 0;border-bottom:1px solid #ddd;flex-wrap:wrap}
+.tab{cursor:pointer;color:#5f6368;padding:10px 0}
+.tab.active{color:#1a73e8;border-bottom:3px solid #1a73e8}
+.engine{display:flex;align-items:center;gap:14px;font-size:22px;margin:18px 0;cursor:pointer}
+.engine img{width:36px;height:36px}
+
+@media(max-width:768px){
+  .logo{font-size:48px}
+}
 </style>
 </head>
 
@@ -36,86 +64,124 @@ iframe{width:100%;height:100%;border:none}
 
 <!-- WEBSITE MODE -->
 <div id="site">
-  <h1>Searchmas</h1>
+  <div class="logo">
+    <span class="b">S</span><span class="r">e</span><span class="y">a</span><span class="b">r</span>
+    <span class="g">c</span><span class="r">h</span>
+    <span class="b">m</span><span class="y">a</span><span class="g">s</span>
+  </div>
   <input id="siteSearch" placeholder="Search the web" onkeydown="siteSearchEnter(event)">
 </div>
 
-<!-- PWA MODE -->
-<div id="pwa">
-  <div id="topbar">
-    <input id="urlbar" placeholder="Search or enter website" onkeydown="handleEnter(event)">
+<!-- RESULTS -->
+<div id="results">
+  <div class="topbar">
+    <div class="back" onclick="goHome()">⬅</div>
+    <div class="logo" style="font-size:28px">
+      <span class="b">S</span><span class="r">e</span><span class="y">a</span><span class="b">r</span>
+      <span class="g">c</span><span class="r">h</span>
+      <span class="b">m</span><span class="y">a</span><span class="g">s</span>
+    </div>
+    <input id="qTop" placeholder="Search again">
   </div>
-  <div id="browser">
-    <iframe id="view"></iframe>
-    <div id="tabs"></div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="setTab('all')">All</div>
+    <div class="tab" onclick="setTab('images')">Images</div>
+    <div class="tab" onclick="setTab('videos')">Videos</div>
+    <div class="tab" onclick="setTab('news')">News</div>
   </div>
-  <div id="bottom">
-    <div class="btn" onclick="goBack()">⬅️</div>
-    <div class="btn" onclick="goForward()">➡️</div>
-    <div class="btn" onclick="newTab()">➕</div>
-    <div class="btn" onclick="toggleTabs()">🗂️</div>
-  </div>
+
+  <div class="content" id="content"></div>
 </div>
 
 <script>
-const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+let tab="all";
 
-document.getElementById(isPWA ? "pwa" : "site").style.display="flex";
+const site=document.getElementById("site");
+const results=document.getElementById("results");
+const qTop=document.getElementById("qTop");
+const content=document.getElementById("content");
 
-/* WEBSITE MODE LOGIC */
 function siteSearchEnter(e){
   if(e.key==="Enter"){
     const q=e.target.value.trim();
-    if(q) window.location.href="?q="+encodeURIComponent(q);
+    if(q){
+      history.pushState(null,"",`?q=${encodeURIComponent(q)}`);
+      showResults(q);
+    }
   }
 }
 
-/* PWA MODE LOGIC */
-let tabs=[],currentTab=0;
-const view=document.getElementById("view");
-const urlbar=document.getElementById("urlbar");
-const tabsView=document.getElementById("tabs");
+qTop.onkeydown=e=>{
+  if(e.key==="Enter") search();
+};
 
-function newTab(url="https://www.bing.com"){
-  tabs.push({url});
-  currentTab=tabs.length-1;
-  loadTab();
+function goHome(){
+  history.replaceState(null,"","./");
+  results.style.display="none";
+  site.style.display="flex";
 }
-function loadTab(){
-  const tab=tabs[currentTab];
-  view.src=tab.url;
-  urlbar.value=tab.url;
+
+function setTab(t){
+  tab=t;
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+  event.target.classList.add("active");
+  search();
 }
-function handleEnter(e){
-  if(e.key==="Enter"){
-    let val=urlbar.value.trim();
-    if(!val)return;
-    let url=val.startsWith("http")?val:"https://www.bing.com/search?q="+encodeURIComponent(val);
-    if(url.includes("google.com")){window.open(url,"_blank");return;}
-    tabs[currentTab].url=url;
-    loadTab();
-  }
+
+function showResults(q){
+  site.style.display="none";
+  results.style.display="block";
+  qTop.value=q;
+  search();
 }
-function toggleTabs(){
-  tabsView.style.display=tabsView.style.display==="flex"?"none":"flex";
-  renderTabs();
-}
-function renderTabs(){
-  tabsView.innerHTML="";
-  tabs.forEach((t,i)=>{
-    tabsView.innerHTML+=`
-      <div class="tab-card">
-        <button onclick="closeTab(${i})">✖</button>
-        <div onclick="selectTab(${i})">${t.url}</div>
+
+function search(){
+  const q=qTop.value.trim();
+  if(!q)return;
+  const enc=encodeURIComponent(q);
+  content.innerHTML="";
+
+  if(tab==="all"){
+    content.innerHTML=`
+      <div class="engine" onclick="window.open('https://www.google.com/search?q=${enc}')">
+        <img src="https://www.google.com/favicon.ico"> Google
+      </div>
+      <div class="engine" onclick="window.open('https://www.bing.com/search?q=${enc}')">
+        <img src="https://www.bing.com/favicon.ico"> Bing
+      </div>
+      <div class="engine" onclick="window.open('https://duckduckgo.com/?q=${enc}')">
+        <img src="https://duckduckgo.com/favicon.ico"> DuckDuckGo
       </div>`;
-  });
-}
-function selectTab(i){currentTab=i;tabsView.style.display="none";loadTab();}
-function closeTab(i){tabs.splice(i,1);if(!tabs.length)newTab();currentTab=Math.max(0,currentTab-1);loadTab();}
-function goBack(){try{view.contentWindow.history.back()}catch(e){}}
-function goForward(){try{view.contentWindow.history.forward()}catch(e){}}
+  }
 
-if(isPWA)newTab();
+  if(tab==="images"){
+    content.innerHTML=`
+      <div class="engine" onclick="window.open('https://www.google.com/images?q=${enc}')">
+        <img src="https://www.google.com/favicon.ico"> Google Images
+      </div>`;
+  }
+
+  if(tab==="videos"){
+    content.innerHTML=`
+      <div class="engine" onclick="window.open('https://www.youtube.com/results?search_query=${enc}')">
+        <img src="https://www.youtube.com/favicon.ico"> YouTube
+      </div>`;
+  }
+
+  if(tab==="news"){
+    content.innerHTML=`
+      <div class="engine" onclick="window.open('https://news.google.com/search?q=${enc}')">
+        <img src="https://static.vecteezy.com/system/resources/previews/022/613/029/large_2x/google-news-icon-logo-symbol-free-png.png"> Google News
+      </div>`;
+  }
+}
+
+/* Load from URL */
+const params=new URLSearchParams(window.location.search);
+const q=params.get("q");
+if(q)showResults(q);
 </script>
+
 </body>
 </html>
