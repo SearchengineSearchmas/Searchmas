@@ -53,7 +53,6 @@ input{width:100%;padding:14px 20px;font-size:18px;border-radius:24px;border:1px 
 </head>
 
 <body>
-<!-- HOME -->
 <div id="home">
   <div class="logo">
     <span>S</span><span>e</span><span>a</span><span>r</span><span>c</span>
@@ -64,7 +63,6 @@ input{width:100%;padding:14px 20px;font-size:18px;border-radius:24px;border:1px 
   </form>
 </div>
 
-<!-- RESULTS -->
 <div id="results">
   <div class="topbar">
     <div class="back" onclick="goHome()">⬅</div>
@@ -112,7 +110,6 @@ function startSearch(e){
   showResults(q);
 }
 
-/* TOP SEARCH */
 qTop.onkeydown=e=>{
   if(e.key==="Enter"){
     const q=qTop.value.trim();
@@ -122,14 +119,13 @@ qTop.onkeydown=e=>{
   }
 };
 
-/* TABS */
 document.querySelectorAll(".tab").forEach(t=>{
   t.onclick=()=>{
     tab=t.dataset.tab;
     document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
     t.classList.add("active");
     if(tab==="ai"){
-      location.href="https://gemini.google.com"; // REDIRECT
+      location.href="https://gemini.google.com";
       return;
     }
     search();
