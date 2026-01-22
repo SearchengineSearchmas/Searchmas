@@ -5,25 +5,12 @@
 <title>Searchmas</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- FAVICON -->
-<link rel="icon" href="favicon.ico">
-
-<!-- PWA -->
+<link rel="icon" href="favicon.ico?v=999">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1a73e8">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Searchmas">
-<link rel="apple-touch-icon" href="favicon.ico">
 
 <style>
-html,body{
-  margin:0;
-  padding:0;
-  width:100%;
-  height:100%;
-}
-
+html,body{margin:0;padding:0;width:100%;height:100%}
 body{
   font-family:Arial,sans-serif;
   color:#202124;
@@ -31,8 +18,6 @@ body{
     url('Santa.png') left center / 50% 100vh no-repeat,
     url('Santa.png') right center / 50% 100vh no-repeat;
 }
-
-/* HOME */
 #home{
   min-height:100vh;
   display:flex;
@@ -41,144 +26,42 @@ body{
   align-items:center;
   text-align:center;
 }
-
-.logo{
-  font-size:clamp(48px,10vw,80px);
-  font-weight:bold;
-}
-.logo span:nth-child(1){color:#4285f4}
-.logo span:nth-child(2){color:#ff9800}
-.logo span:nth-child(3){color:#fbbc05}
-.logo span:nth-child(4){color:#4285f4}
-.logo span:nth-child(5){color:#34a853}
-.logo span:nth-child(6){color:#ff9800}
-.logo span:nth-child(7){color:#fbbc05}
-.logo span:nth-child(8){color:#4285f4}
-.logo span:nth-child(9){color:#34a853}
-
-.search-box{
-  width:100%;
-  max-width:580px;
-  padding:0 16px;
-}
-
+.logo{font-size:clamp(48px,10vw,80px);font-weight:bold}
+.search-box{width:100%;max-width:580px;padding:0 16px}
 input{
-  width:100%;
-  padding:14px 20px;
-  font-size:18px;
-  border-radius:24px;
-  border:1px solid #dfe1e5;
+  width:100%;padding:14px 20px;font-size:18px;
+  border-radius:24px;border:1px solid #dfe1e5
 }
-input:focus{outline:none}
-
-/* RESULTS */
-#results{
-  display:none;
-  padding:15px;
-  max-width:1100px;
-  margin:0 auto;
-}
-
-.topbar{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  flex-wrap:wrap;
-}
-
-.back{
-  font-size:22px;
-  cursor:pointer;
-}
-
-.small-logo{
-  font-size:26px;
-  font-weight:bold;
-}
-
-/* TABS */
-.tabs{
-  display:flex;
-  gap:25px;
-  margin:15px 0;
-  border-bottom:1px solid #ddd;
-  flex-wrap:wrap;
-}
-.tab{
-  padding:10px 0;
-  cursor:pointer;
-  color:#5f6368;
-}
-.tab.active{
-  color:#1a73e8;
-  border-bottom:3px solid #1a73e8;
-}
-
-.content{margin-top:20px}
-
-/* ENGINES */
-.engine{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  font-size:22px;
-  margin:18px 0;
-  cursor:pointer;
-}
-.engine img{
-  width:36px;
-  height:36px;
-}
-
-/* GRIDS */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-  gap:12px;
-}
-.grid img{
-  width:100%;
-  border-radius:8px;
-}
-.video-title{
-  font-size:14px;
-  margin-top:6px;
-}
-
-/* FLIGHTS */
-.flight-frame{
-  width:100%;
-  height:600px;
-  border:none;
-}
-
-/* MOBILE */
+#results{display:none;padding:15px;max-width:1100px;margin:0 auto}
+.topbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.back{cursor:pointer;font-size:22px}
+.tabs{display:flex;gap:25px;margin:15px 0;border-bottom:1px solid #ddd;flex-wrap:wrap}
+.tab{cursor:pointer;color:#5f6368;padding:10px 0}
+.tab.active{color:#1a73e8;border-bottom:3px solid #1a73e8}
+.engine{display:flex;align-items:center;gap:14px;font-size:22px;margin:18px 0;cursor:pointer}
+.engine img{width:36px;height:36px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.grid img{width:100%;border-radius:8px}
+.flight-frame{width:100%;height:600px;border:none}
 @media (max-width:768px){
-  body{
-    background:url('Santa.png') center center / cover no-repeat;
-  }
+  body{background:url('Santa.png') center/cover no-repeat}
 }
 </style>
 </head>
 
 <body>
 
-<!-- HOME -->
 <div id="home">
-  <div class="logo">
-    <span>S</span><span>e</span><span>a</span><span>r</span><span>c</span><span>h</span><span>m</span><span>a</span><span>s</span>
-  </div>
-
+  <div class="logo">Searchmas</div>
   <form class="search-box" onsubmit="enter(event)">
     <input id="qHome" placeholder="Search or type a URL">
   </form>
 </div>
 
-<!-- RESULTS -->
 <div id="results">
   <div class="topbar">
     <div class="back" onclick="goHome()">⬅</div>
-    <div class="small-logo">Searchmas</div>
+    <div>Searchmas</div>
     <input id="qTop">
   </div>
 
@@ -196,7 +79,6 @@ input:focus{outline:none}
 
 <script>
 let tab="all";
-
 const UNSPLASH="Wsi2QpvPXyiNLfGRbZX8MwbDg7oqCQQFtibqIu02nWA";
 const YT="AIzaSyBKN7qNWVOSjIf040epQA579G29IzPxqpI";
 
@@ -209,13 +91,18 @@ const content=document.getElementById("content");
 function enter(e){
   e.preventDefault();
   if(!qHome.value.trim()) return;
-  home.style.display="none";
-  results.style.display="block";
   qTop.value=qHome.value;
-  setTab("all");
+  showResults();
+  updateURL();
+  search();
 }
 
-qTop.onkeydown=e=>e.key==="Enter"&&search();
+qTop.onkeydown=e=>{
+  if(e.key==="Enter"){
+    updateURL();
+    search();
+  }
+};
 
 document.querySelectorAll(".tab").forEach(t=>{
   t.onclick=()=>setTab(t.dataset.tab);
@@ -228,9 +115,30 @@ function setTab(t){
   search();
 }
 
+function showResults(){
+  home.style.display="none";
+  results.style.display="block";
+}
+
 function goHome(){
+  history.replaceState(null,"","./");
   results.style.display="none";
   home.style.display="flex";
+}
+
+function updateURL(){
+  const q=qTop.value.trim();
+  history.replaceState(null,"",`?q=${encodeURIComponent(q)}`);
+}
+
+function readQueryFromURL(){
+  const params=new URLSearchParams(window.location.search);
+  const q=params.get("q");
+  if(q){
+    qTop.value=q;
+    showResults();
+    search();
+  }
 }
 
 function search(){
@@ -240,7 +148,7 @@ function search(){
   content.innerHTML="";
 
   if(tab==="ai"){
-    window.location.href="https://gemini.google.com";
+    window.open("https://gemini.google.com","_blank");
     return;
   }
 
@@ -279,7 +187,7 @@ function search(){
                 <a target="_blank" href="https://youtube.com/watch?v=${v.id.videoId}">
                   <img src="${v.snippet.thumbnails.medium.url}">
                 </a>
-                <div class="video-title">${v.snippet.title}</div>
+                <div>${v.snippet.title}</div>
               </div>`).join("")
           }</div>`;
       });
@@ -294,17 +202,11 @@ function search(){
   }
 
   if(tab==="flights"){
-    content.innerHTML=
-      `<iframe class="flight-frame" src="https://www.flightradar24.com/simple"></iframe>`;
+    content.innerHTML=`<iframe class="flight-frame" src="https://www.flightradar24.com/simple"></iframe>`;
   }
 }
-</script>
 
-<!-- SERVICE WORKER -->
-<script>
-if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("sw.js");
-}
+readQueryFromURL();
 </script>
 
 </body>
