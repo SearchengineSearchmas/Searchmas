@@ -14,19 +14,24 @@ html,body{
   margin:0;padding:0;
   width:100%;height:100%;
   font-family:Arial,sans-serif;
+  background:#f5f5f5;
 }
 
-/* SMART SANTA BACKGROUND */
+/* DESKTOP: TWO SANTAS + GRADIENT FILL */
 body{
+  min-height:100vh;
   background:
-    url('Santa.png') left center / 50% 100vh no-repeat,
-    url('Santa.png') right center / 50% 100vh no-repeat;
+    linear-gradient(to right, #f8fbff 0%, #f8fbff 50%, #f8fbff 100%),
+    url('Santa.png') left top / 50% 100% no-repeat,
+    url('Santa.png') right top / 50% 100% no-repeat;
 }
 
-/* MOBILE BACKGROUND */
+/* MOBILE: ONE SANTA + COLOR FILL */
 @media(max-width:768px){
   body{
-    background:url('Santa.png') center/cover no-repeat;
+    background:
+      linear-gradient(#f8fbff,#f8fbff),
+      url('Santa.png') center top / contain no-repeat;
   }
 }
 
@@ -39,6 +44,7 @@ body{
   align-items:center;
   text-align:center;
   padding:20px;
+  background:rgba(255,255,255,0.7);
 }
 #site input{
   padding:14px 20px;
@@ -67,12 +73,13 @@ body{
   padding:15px;
   max-width:1100px;
   margin:0 auto;
+  background:rgba(255,255,255,0.85);
+  border-radius:16px;
 }
 .topbar{
   display:flex;
   align-items:center;
   gap:12px;
-  flex-wrap:nowrap;
 }
 .topbar input{
   flex:1;
@@ -118,7 +125,7 @@ body{
   height:32px;
 }
 
-/* IMAGES GRID */
+/* IMAGES */
 .images{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
@@ -129,9 +136,15 @@ body{
   border-radius:8px;
 }
 
-/* MOBILE */
+/* MOBILE UI */
 @media(max-width:768px){
-  .logo{font-size:48px}
+  .logo{font-size:42px}
+  #site input,
+  .topbar input{
+    font-size:16px;
+    padding:10px 14px;
+  }
+  .engine{font-size:17px}
 }
 </style>
 </head>
@@ -261,7 +274,7 @@ function search(){
   }
 }
 
-/* Load from URL */
+/* LOAD ?q= */
 const params=new URLSearchParams(window.location.search);
 const q=params.get("q");
 if(q)showResults(q);
