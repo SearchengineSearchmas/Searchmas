@@ -5,16 +5,25 @@
 <title>Searchmas</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- PWA + FAVICON -->
+<link rel="icon" href="favicon.ico">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a73e8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Searchmas">
+
 <style>
 html,body{
   margin:0;padding:0;width:100%;height:100%;
   font-family:Arial,sans-serif;
 }
+
 body{
   background:
     url('Santa.png') left center / 50% 100vh no-repeat,
     url('Santa.png') right center / 50% 100vh no-repeat;
 }
+
 #home{
   min-height:100vh;
   display:flex;
@@ -23,6 +32,7 @@ body{
   align-items:center;
   text-align:center;
 }
+
 .logo{
   font-size:clamp(48px,10vw,80px);
   font-weight:bold;
@@ -37,7 +47,7 @@ body{
 .logo span:nth-child(8){color:#4285f4}
 .logo span:nth-child(9){color:#34a853}
 
-.search-box{width:100%;max-width:580px;padding:0 16px}
+.search-box{max-width:580px;width:100%;padding:0 16px}
 input{
   width:100%;
   padding:14px 20px;
@@ -46,7 +56,14 @@ input{
   border:1px solid #dfe1e5;
 }
 
-#results{display:none;max-width:1100px;margin:auto;padding:15px}
+#results{
+  display:none;
+  max-width:1100px;
+  margin:auto;
+  padding:15px;
+  min-height:100vh;
+}
+
 .topbar{display:flex;gap:12px;align-items:center}
 .back{cursor:pointer;font-size:22px}
 
@@ -57,10 +74,18 @@ input{
 .tab{cursor:pointer;color:#5f6368;padding-bottom:8px}
 .tab.active{color:#1a73e8;border-bottom:3px solid #1a73e8}
 
+/* 🔹 RESULT TEXT GREY */
 .engine{
   font-size:22px;
   margin:18px 0;
   cursor:pointer;
+  color:#5f6368;
+}
+
+.video-title{
+  font-size:14px;
+  margin-top:6px;
+  color:#5f6368;
 }
 
 .grid{
@@ -69,7 +94,6 @@ input{
   gap:12px;
 }
 .grid img{width:100%;border-radius:8px}
-.video-title{font-size:14px;margin-top:6px}
 </style>
 </head>
 
@@ -120,32 +144,45 @@ const content=document.getElementById("content");
 function enter(e){
   e.preventDefault();
   if(!qHome.value.trim()) return;
-  showResults(qHome.value.trim());
+  history.pushState({q:qHome.value},"",`?q=${encodeURIComponent(qHome.value)}`);
+  showResults(qHome.value);
 }
 
 function showResults(q){
   home.style.display="none";
   results.style.display="block";
   qTop.value=q;
-  setTab("all");
+  setTab("all",false);
 }
 
 function goHome(){
+  history.pushState(null,"",location.pathname);
   results.style.display="none";
   home.style.display="flex";
 }
 
-qTop.onkeydown=e=>e.key==="Enter"&&search();
+qTop.onkeydown=e=>{
+  if(e.key==="Enter"){
+    history.pushState({q:qTop.value},"",`?q=${encodeURIComponent(qTop.value)}`);
+    search();
+  }
+};
+
+window.onpopstate=()=>{
+  const p=new URLSearchParams(location.search);
+  const q=p.get("q");
+  q ? showResults(q) : goHome();
+};
 
 document.querySelectorAll(".tab").forEach(t=>{
-  t.onclick=()=>setTab(t.dataset.tab);
+  t.onclick=()=>setTab(t.dataset.tab,true);
 });
 
-function setTab(t){
+function setTab(t,doSearch){
   tab=t;
   document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
   document.querySelector(`.tab[data-tab="${t}"]`).classList.add("active");
-  search();
+  if(doSearch) search();
 }
 
 function search(){
@@ -154,10 +191,7 @@ function search(){
   const enc=encodeURIComponent(q);
   content.innerHTML="";
 
-  if(tab==="ai"){
-    location.href="https://gemini.google.com";
-    return;
-  }
+  if(tab==="ai"){ location.href="https://gemini.google.com"; return; }
 
   if(tab==="all"){
     content.innerHTML=`
@@ -210,13 +244,9 @@ function search(){
   }
 }
 
-/* ?q= REDIRECTOR (no infinite pages) */
-const p=new URLSearchParams(location.search);
-const incoming=p.get("q");
-if(incoming){
-  history.replaceState(null,"",location.pathname);
-  showResults(decodeURIComponent(incoming.replace(/\+/g," ")));
-}
+/* Load from ?q= */
+const initQ=new URLSearchParams(location.search).get("q");
+if(initQ) showResults(initQ);
 </script>
 
 </body>
