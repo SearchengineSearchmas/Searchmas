@@ -11,7 +11,7 @@
 <meta name="theme-color" content="#1a73e8">
 
 <style>
-html,body{margin:0;padding:0;height:100%;font-family:Arial,sans-serif}
+html,body{margin:0;padding:0;height:100%;font-family:Arial,sans-serif;}
 
 body{
   background:
@@ -27,11 +27,31 @@ body{
   justify-content:center;
   align-items:center;
 }
-.logo{font-size:clamp(48px,10vw,80px);font-weight:bold}
-.search-box{max-width:580px;width:100%;padding:0 16px}
+.logo{
+  font-size:clamp(48px,10vw,80px);
+  font-weight:bold;
+  text-align:center;
+}
+.logo span:nth-child(1){color:#4285f4}
+.logo span:nth-child(2){color:#ff9800}
+.logo span:nth-child(3){color:#fbbc05}
+.logo span:nth-child(4){color:#4285f4}
+.logo span:nth-child(5){color:#34a853}
+.logo span:nth-child(6){color:#ff9800}
+.logo span:nth-child(7){color:#fbbc05}
+.logo span:nth-child(8){color:#4285f4}
+.logo span:nth-child(9){color:#34a853}
+
+.search-box{
+  max-width:580px;width:100%;
+  padding:0 16px;
+}
 input{
-  width:100%;padding:14px 20px;font-size:18px;
-  border-radius:24px;border:1px solid #dfe1e5;
+  width:100%;
+  padding:14px 20px;
+  font-size:18px;
+  border-radius:24px;
+  border:1px solid #dfe1e5;
 }
 
 /* RESULTS */
@@ -42,18 +62,30 @@ input{
   padding:15px;
   min-height:100vh;
 }
-
-.topbar{display:flex;gap:12px;align-items:center}
+.topbar{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
 .back{cursor:pointer;font-size:22px}
-
 .tabs{
-  display:flex;gap:22px;margin:15px 0;border-bottom:1px solid #ddd;
+  display:flex;
+  gap:22px;
+  margin:15px 0;
+  border-bottom:1px solid #ddd;
   flex-wrap:wrap;
 }
-.tab{cursor:pointer;color:#5f6368;padding-bottom:8px}
-.tab.active{color:#1a73e8;border-bottom:3px solid #1a73e8}
+.tab{
+  cursor:pointer;
+  color:#5f6368;
+  padding-bottom:8px;
+}
+.tab.active{
+  color:#1a73e8;
+  border-bottom:3px solid #1a73e8;
+}
 
-/* RESULT CARDS */
+/* FLOATING WHITE CARDS FOR ALL RESULTS */
 .card{
   background:#fff;
   border-radius:12px;
@@ -64,18 +96,33 @@ input{
   gap:14px;
   cursor:pointer;
   box-shadow:0 2px 6px rgba(0,0,0,.08);
+  color:#000; /* BLACK TEXT */
+  text-decoration:none;
 }
-.card img{width:28px;height:28px}
-.card span{font-size:18px;color:#5f6368}
+.card img{
+  width:28px;
+  height:28px;
+}
+.card span{
+  font-size:18px;
+  color:#000; /* BLACK TEXT */
+}
 
-/* MEDIA */
+/* GRID FOR IMAGES & VIDEOS */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
   gap:12px;
 }
-.grid img{width:100%;border-radius:10px}
-.video-title{font-size:14px;color:#5f6368;margin-top:6px}
+.grid img{
+  width:100%;
+  border-radius:10px;
+}
+.video-title{
+  font-size:14px;
+  color:#000; /* BLACK TEXT */
+  margin-top:6px;
+}
 </style>
 </head>
 
@@ -83,7 +130,10 @@ input{
 
 <!-- HOME -->
 <div id="home">
-  <div class="logo">Searchmas</div>
+  <div class="logo">
+    <span>S</span><span>e</span><span>a</span><span>r</span><span>c</span>
+    <span>h</span><span>m</span><span>a</span><span>s</span>
+  </div>
   <form class="search-box" onsubmit="startSearch(event)">
     <input id="qHome" placeholder="Search the web">
   </form>
@@ -122,7 +172,6 @@ const content=document.getElementById("content");
 /* INITIAL LOAD */
 const params=new URLSearchParams(location.search);
 const startQ=params.get("q");
-
 if(startQ && startQ.trim()){
   showResults(startQ);
 }else{
@@ -171,10 +220,11 @@ function goHome(){
   homeEl.style.display="flex";
 }
 
+/* HELPER: CREATE A CARD */
 function card(icon,text,url){
-  return `<div class="card" onclick="window.open('${url}','_blank')">
+  return `<a class="card" href="${url}" target="_blank">
     <img src="${icon}"><span>${text}</span>
-  </div>`;
+  </a>`;
 }
 
 function search(){
@@ -206,7 +256,7 @@ function search(){
     .then(r=>r.json())
     .then(d=>{
       content.innerHTML=`<div class="grid">${
-        d.results.map(i=>`<img src="${i.urls.small}">`).join("")
+        d.results.map(i=>`<div class="card"><img src="${i.urls.thumb}"><span>Image</span></div>`).join("")
       }</div>`;
     });
   }
@@ -217,11 +267,11 @@ function search(){
     .then(d=>{
       content.innerHTML=`<div class="grid">${
         d.items.map(v=>`
-          <div>
+          <div class="card">
             <a target="_blank" href="https://youtube.com/watch?v=${v.id.videoId}">
               <img src="${v.snippet.thumbnails.medium.url}">
+              <span>${v.snippet.title}</span>
             </a>
-            <div class="video-title">${v.snippet.title}</div>
           </div>`).join("")
       }</div>`;
     });
