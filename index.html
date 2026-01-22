@@ -4,10 +4,9 @@
 <meta charset="UTF-8">
 <title>Searchmas</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="favicon.ico">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#ffffff">
 
 <style>
 html,body{
@@ -15,26 +14,39 @@ html,body{
   width:100%;
   min-height:100%;
   font-family:Arial,sans-serif;
-  background:#000;
-  color:#fff;
 }
 
-/* DESKTOP: TWO SANTAS FADING INTO BLACK */
+/* LIGHT MODE (DEFAULT) */
 body{
   background:
-    linear-gradient(to bottom, rgba(0,0,0,0.2), #000),
     url('Santa.png') left top / 50% 100% repeat-y,
     url('Santa.png') right top / 50% 100% repeat-y;
+  color:#202124;
+}
+.light-bg{
+  background:rgba(255,255,255,0.75);
 }
 
 /* MOBILE: ONE SANTA */
 @media(max-width:768px){
   body{
-    background:
-      linear-gradient(to bottom, rgba(0,0,0,0.2), #000),
-      url('Santa.png') center top / contain repeat-y;
+    background:url('Santa.png') center top / contain repeat-y;
   }
 }
+
+/* DARK MODE */
+body.dark{
+  background:
+    linear-gradient(to bottom, rgba(0,0,0,0.3), #000),
+    url('Santa.png') left top / 50% 100% repeat-y,
+    url('Santa.png') right top / 50% 100% repeat-y;
+  color:white;
+}
+body.dark .light-bg{background:rgba(0,0,0,0.75);}
+body.dark input{background:#111;color:white;border:none}
+body.dark .tab{color:#aaa}
+body.dark .tab.active{color:white;border-bottom:3px solid white}
+body.dark .logo span{color:white}
 
 /* HOME */
 #site{
@@ -45,28 +57,28 @@ body{
   align-items:center;
   text-align:center;
   padding:20px;
-  background:rgba(0,0,0,0.65);
 }
 #site input{
   padding:14px 20px;
   font-size:18px;
   border-radius:24px;
-  border:none;
+  border:1px solid #dfe1e5;
   width:100%;
   max-width:500px;
-  background:#111;
-  color:white;
 }
 
-/* LOGO DARK MODE */
+/* LOGO */
 .logo{
   font-size:64px;
   font-weight:bold;
   margin-bottom:20px;
   white-space:nowrap;
   letter-spacing:-2px;
-  color:white;
 }
+.logo span.b{color:#4285f4}
+.logo span.o{color:#ff9800}
+.logo span.y{color:#fbbc05}
+.logo span.g{color:#34a853}
 
 /* RESULTS */
 #results{
@@ -74,7 +86,6 @@ body{
   padding:15px;
   max-width:1200px;
   margin:30px auto;
-  background:rgba(0,0,0,0.8);
   border-radius:16px;
 }
 .topbar{
@@ -87,32 +98,34 @@ body{
   padding:12px 18px;
   font-size:18px;
   border-radius:24px;
-  border:none;
-  background:#111;
-  color:white;
+  border:1px solid #dfe1e5;
 }
-.back{
+.back{cursor:pointer;font-size:22px}
+
+/* TOGGLE */
+.toggle{
+  position:fixed;
+  top:12px;
+  right:12px;
   cursor:pointer;
-  font-size:22px;
+  padding:8px 12px;
+  border-radius:20px;
+  background:rgba(0,0,0,0.1);
+  font-size:14px;
+  z-index:1000;
 }
+body.dark .toggle{background:rgba(255,255,255,0.1);color:white}
 
 /* TABS */
 .tabs{
   display:flex;
   gap:25px;
   margin:15px 0;
-  border-bottom:1px solid #333;
+  border-bottom:1px solid #ddd;
   flex-wrap:wrap;
 }
-.tab{
-  cursor:pointer;
-  color:#aaa;
-  padding:10px 0;
-}
-.tab.active{
-  color:white;
-  border-bottom:3px solid white;
-}
+.tab{cursor:pointer;color:#5f6368;padding:10px 0}
+.tab.active{color:#1a73e8;border-bottom:3px solid #1a73e8}
 
 /* ENGINES */
 .engine{
@@ -123,10 +136,7 @@ body{
   margin:16px 0;
   cursor:pointer;
 }
-.engine img{
-  width:32px;
-  height:32px;
-}
+.engine img{width:32px;height:32px}
 
 /* IMAGES */
 .images{
@@ -134,10 +144,7 @@ body{
   grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
   gap:12px;
 }
-.images img{
-  width:100%;
-  border-radius:8px;
-}
+.images img{width:100%;border-radius:8px}
 
 /* FLIGHTS */
 .flight-map{
@@ -150,11 +157,7 @@ body{
 /* MOBILE */
 @media(max-width:768px){
   .logo{font-size:42px}
-  #site input,
-  .topbar input{
-    font-size:16px;
-    padding:10px 14px;
-  }
+  #site input,.topbar input{font-size:16px;padding:10px 14px}
   .engine{font-size:17px}
   .flight-map{height:450px}
 }
@@ -163,17 +166,23 @@ body{
 
 <body>
 
+<div class="toggle" onclick="toggleMode()">🌙/☀️</div>
+
 <!-- HOME -->
-<div id="site">
-  <div class="logo">Searchmas</div>
+<div id="site" class="light-bg">
+  <div class="logo">
+    <span class="b">S</span><span class="o">e</span><span class="y">a</span><span class="b">r</span><span class="g">c</span><span class="o">h</span><span class="b">m</span><span class="y">a</span><span class="g">s</span>
+  </div>
   <input id="siteSearch" placeholder="Search the web" onkeydown="siteSearchEnter(event)">
 </div>
 
 <!-- RESULTS -->
-<div id="results">
+<div id="results" class="light-bg">
   <div class="topbar">
     <div class="back" onclick="goHome()">⬅</div>
-    <div class="logo" style="font-size:26px">Searchmas</div>
+    <div class="logo" style="font-size:26px">
+      <span class="b">S</span><span class="o">e</span><span class="y">a</span><span class="b">r</span><span class="g">c</span><span class="o">h</span><span class="b">m</span><span class="y">a</span><span class="g">s</span>
+    </div>
     <input id="qTop" placeholder="Search again">
   </div>
 
@@ -196,6 +205,10 @@ const site=document.getElementById("site");
 const results=document.getElementById("results");
 const qTop=document.getElementById("qTop");
 const content=document.getElementById("content");
+
+function toggleMode(){
+  document.body.classList.toggle("dark");
+}
 
 function siteSearchEnter(e){
   if(e.key==="Enter"){
@@ -255,7 +268,7 @@ function search(){
       .then(d=>{
         let html="<div class='images'>";
         d.results.forEach(img=>{
-          html+=`<img src="${img.urls.small}" alt="">`;
+          html+=`<img src="${img.urls.small}">`;
         });
         html+="</div>";
         content.innerHTML=html;
@@ -272,9 +285,7 @@ function search(){
 
   if(tab==="flights"){
     content.innerHTML=`
-      <iframe class="flight-map"
-        src="https://www.flightradar24.com/simple"
-        loading="lazy"></iframe>`;
+      <iframe class="flight-map" src="https://www.flightradar24.com/simple" loading="lazy"></iframe>`;
   }
 
   if(tab==="news"){
@@ -286,7 +297,6 @@ function search(){
   }
 }
 
-/* LOAD ?q= */
 const params=new URLSearchParams(window.location.search);
 const q=params.get("q");
 if(q)showResults(q);
