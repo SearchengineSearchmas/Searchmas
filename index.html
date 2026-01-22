@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Searchmas Browser UI</title>
+  <title>Searchmas</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * {
@@ -11,98 +11,116 @@
 
     body {
       margin: 0;
-      background: #f2f2f2;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
+      background: #f5f5f5;
+      min-height: 100vh;
     }
 
-    /* Top browser bar */
-    .browser-bar {
+    /* ===== WEB MODE (default) ===== */
+    .web-mode {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 8px;
-      background: #e6e6e6;
+      justify-content: center;
+      height: 100vh;
+      font-size: 26px;
+      color: #444;
+    }
+
+    /* ===== MOBILE PWA BROWSER UI ===== */
+    .browser-ui {
+      display: none;
+      flex-direction: column;
+      height: 100vh;
+      background: white;
+    }
+
+    .browser-bar {
+      display: flex;
+      gap: 8px;
+      padding: 12px;
+      background: #eeeeee;
       border-bottom: 1px solid #ccc;
     }
 
     .browser-bar button {
       border: none;
-      background: #ffffff;
-      padding: 8px 10px;
-      border-radius: 8px;
-      font-size: 16px;
+      background: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 18px;
       cursor: pointer;
     }
 
     .browser-bar input {
       flex: 1;
-      padding: 8px 12px;
+      padding: 12px 16px;
       border-radius: 999px;
       border: 1px solid #ccc;
-      font-size: 14px;
+      font-size: 16px;
       outline: none;
     }
 
-    /* Fake page area */
     .page-view {
       flex: 1;
-      background: white;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #777;
       font-size: 18px;
+      color: #777;
     }
 
-    /* Bottom navigation */
     .bottom-nav {
       display: flex;
       justify-content: space-around;
-      padding: 10px 0;
-      background: #e6e6e6;
+      padding: 14px 0;
+      background: #eeeeee;
       border-top: 1px solid #ccc;
     }
 
     .bottom-nav button {
-      background: none;
       border: none;
-      font-size: 18px;
+      background: none;
+      font-size: 20px;
       cursor: pointer;
     }
 
-    /* Desktop fallback */
-    @media (min-width: 900px) {
-      body {
-        max-width: 400px;
-        margin: auto;
-        border: 1px solid #ccc;
+    /* ===== ENABLE PWA UI ONLY ON SMALL SCREENS ===== */
+    @media (max-width: 768px) {
+      .web-mode {
+        display: none;
+      }
+
+      .browser-ui {
+        display: flex;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Top bar -->
-  <div class="browser-bar">
-    <button>←</button>
-    <button>→</button>
-    <input type="text" placeholder="Search or enter website">
-    <button>＋</button>
+  <!-- Web mode (desktop / normal web) -->
+  <div class="web-mode">
+    Searchmas
   </div>
 
-  <!-- Page preview -->
-  <div class="page-view">
-    Page content appears here
-  </div>
+  <!-- Mobile PWA Browser UI -->
+  <div class="browser-ui">
+    <div class="browser-bar">
+      <button>←</button>
+      <button>→</button>
+      <input type="text" placeholder="Search or enter website">
+      <button>＋</button>
+    </div>
 
-  <!-- Bottom navigation -->
-  <div class="bottom-nav">
-    <button>🏠</button>
-    <button>📄</button>
-    <button>⭐</button>
-    <button>⚙️</button>
+    <div class="page-view">
+      Web content appears here
+    </div>
+
+    <div class="bottom-nav">
+      <button>🛖</button>
+      <button>📑</button>
+      <button>⭐</button>
+      <button>⚙️</button>
+    </div>
   </div>
 
 </body>
