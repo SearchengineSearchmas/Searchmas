@@ -16,15 +16,18 @@ html,body{
   font-family:Arial,sans-serif;
 }
 
-/* SMART BACKGROUND */
+/* SMART SANTA BACKGROUND */
 body{
   background:
-    linear-gradient(to right, transparent 50%, transparent 50%),
-    url('Santa.png');
-  background-repeat:no-repeat,no-repeat;
-  background-position:left center, right center;
-  background-size:50% 100%, cover;
-  background-attachment:fixed;
+    url('Santa.png') left center / 50% 100vh no-repeat,
+    url('Santa.png') right center / 50% 100vh no-repeat;
+}
+
+/* MOBILE BACKGROUND */
+@media(max-width:768px){
+  body{
+    background:url('Santa.png') center/cover no-repeat;
+  }
 }
 
 /* HOME */
@@ -69,12 +72,21 @@ body{
   display:flex;
   align-items:center;
   gap:12px;
-  flex-wrap:wrap;
+  flex-wrap:nowrap;
+}
+.topbar input{
+  flex:1;
+  padding:12px 18px;
+  font-size:18px;
+  border-radius:24px;
+  border:1px solid #dfe1e5;
 }
 .back{
   cursor:pointer;
   font-size:22px;
 }
+
+/* TABS */
 .tabs{
   display:flex;
   gap:25px;
@@ -91,6 +103,8 @@ body{
   color:#1a73e8;
   border-bottom:3px solid #1a73e8;
 }
+
+/* ENGINES */
 .engine{
   display:flex;
   align-items:center;
@@ -104,11 +118,19 @@ body{
   height:32px;
 }
 
-/* MOBILE FIX */
+/* IMAGES GRID */
+.images{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:12px;
+}
+.images img{
+  width:100%;
+  border-radius:8px;
+}
+
+/* MOBILE */
 @media(max-width:768px){
-  body{
-    background:url('Santa.png') center/cover no-repeat;
-  }
   .logo{font-size:48px}
 }
 </style>
@@ -116,6 +138,7 @@ body{
 
 <body>
 
+<!-- HOME -->
 <div id="site">
   <div class="logo">
     <span class="b">S</span><span class="r">e</span><span class="y">a</span><span class="b">r</span>
@@ -125,6 +148,7 @@ body{
   <input id="siteSearch" placeholder="Search the web" onkeydown="siteSearchEnter(event)">
 </div>
 
+<!-- RESULTS -->
 <div id="results">
   <div class="topbar">
     <div class="back" onclick="goHome()">⬅</div>
@@ -148,6 +172,8 @@ body{
 
 <script>
 let tab="all";
+const UNSPLASH="Wsi2QpvPXyiNLfGRbZX8MwbDg7oqCQQFtibqIu02nWA";
+
 const site=document.getElementById("site");
 const results=document.getElementById("results");
 const qTop=document.getElementById("qTop");
@@ -190,6 +216,7 @@ function search(){
   if(!q)return;
   const enc=encodeURIComponent(q);
   content.innerHTML="";
+
   if(tab==="all"){
     content.innerHTML=`
       <div class="engine" onclick="window.open('https://www.google.com/search?q=${enc}')">
@@ -200,6 +227,36 @@ function search(){
       </div>
       <div class="engine" onclick="window.open('https://duckduckgo.com/?q=${enc}')">
         <img src="https://duckduckgo.com/favicon.ico"> DuckDuckGo
+      </div>`;
+  }
+
+  if(tab==="images"){
+    content.innerHTML="Loading images...";
+    fetch(`https://api.unsplash.com/search/photos?query=${enc}&per_page=18&client_id=${UNSPLASH}`)
+      .then(r=>r.json())
+      .then(d=>{
+        let html="<div class='images'>";
+        d.results.forEach(img=>{
+          html+=`<img src="${img.urls.small}" alt="">`;
+        });
+        html+="</div>";
+        content.innerHTML=html;
+      })
+      .catch(()=>content.innerHTML="Failed to load images.");
+  }
+
+  if(tab==="videos"){
+    content.innerHTML=`
+      <div class="engine" onclick="window.open('https://www.youtube.com/results?search_query=${enc}')">
+        <img src="https://www.youtube.com/favicon.ico"> YouTube
+      </div>`;
+  }
+
+  if(tab==="news"){
+    content.innerHTML=`
+      <div class="engine" onclick="window.open('https://news.google.com/search?q=${enc}')">
+        <img src="https://static.vecteezy.com/system/resources/previews/022/613/029/large_2x/google-news-icon-logo-symbol-free-png.png">
+        Google News
       </div>`;
   }
 }
