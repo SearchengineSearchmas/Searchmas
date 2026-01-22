@@ -16,11 +16,15 @@ html,body{
   font-family:Arial,sans-serif;
 }
 
-/* BACKGROUND */
+/* SMART BACKGROUND */
 body{
   background:
-    url('Santa.png') left center / 50% 100vh no-repeat,
-    url('Santa.png') right center / 50% 100vh no-repeat;
+    linear-gradient(to right, transparent 50%, transparent 50%),
+    url('Santa.png');
+  background-repeat:no-repeat,no-repeat;
+  background-position:left center, right center;
+  background-size:50% 100%, cover;
+  background-attachment:fixed;
 }
 
 /* HOME */
@@ -105,19 +109,13 @@ body{
   body{
     background:url('Santa.png') center/cover no-repeat;
   }
-  .logo{
-    font-size:48px;
-  }
-  .engine{
-    font-size:18px;
-  }
+  .logo{font-size:48px}
 }
 </style>
 </head>
 
 <body>
 
-<!-- HOME -->
 <div id="site">
   <div class="logo">
     <span class="b">S</span><span class="r">e</span><span class="y">a</span><span class="b">r</span>
@@ -127,7 +125,6 @@ body{
   <input id="siteSearch" placeholder="Search the web" onkeydown="siteSearchEnter(event)">
 </div>
 
-<!-- RESULTS -->
 <div id="results">
   <div class="topbar">
     <div class="back" onclick="goHome()">⬅</div>
@@ -151,7 +148,6 @@ body{
 
 <script>
 let tab="all";
-
 const site=document.getElementById("site");
 const results=document.getElementById("results");
 const qTop=document.getElementById("qTop");
@@ -167,9 +163,7 @@ function siteSearchEnter(e){
   }
 }
 
-qTop.onkeydown=e=>{
-  if(e.key==="Enter") search();
-};
+qTop.onkeydown=e=>{if(e.key==="Enter")search()};
 
 function goHome(){
   history.replaceState(null,"","./");
@@ -196,7 +190,6 @@ function search(){
   if(!q)return;
   const enc=encodeURIComponent(q);
   content.innerHTML="";
-
   if(tab==="all"){
     content.innerHTML=`
       <div class="engine" onclick="window.open('https://www.google.com/search?q=${enc}')">
@@ -207,28 +200,6 @@ function search(){
       </div>
       <div class="engine" onclick="window.open('https://duckduckgo.com/?q=${enc}')">
         <img src="https://duckduckgo.com/favicon.ico"> DuckDuckGo
-      </div>`;
-  }
-
-  if(tab==="images"){
-    content.innerHTML=`
-      <div class="engine" onclick="window.open('https://www.google.com/images?q=${enc}')">
-        <img src="https://www.google.com/favicon.ico"> Google Images
-      </div>`;
-  }
-
-  if(tab==="videos"){
-    content.innerHTML=`
-      <div class="engine" onclick="window.open('https://www.youtube.com/results?search_query=${enc}')">
-        <img src="https://www.youtube.com/favicon.ico"> YouTube
-      </div>`;
-  }
-
-  if(tab==="news"){
-    content.innerHTML=`
-      <div class="engine" onclick="window.open('https://news.google.com/search?q=${enc}')">
-        <img src="https://static.vecteezy.com/system/resources/previews/022/613/029/large_2x/google-news-icon-logo-symbol-free-png.png">
-        Google News
       </div>`;
   }
 }
